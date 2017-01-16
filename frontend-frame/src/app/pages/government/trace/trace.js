@@ -7,7 +7,7 @@
   /** @ngInject */
   function TraceCtrl($scope, $http, toastr, $filter) {
 
-    var getCertsApi = "http://localhost:3003/certs";
+    var getCertsApi = "http://localhost:3003/trades";
     $scope.approveList = [];
     $scope.idList = [];
     $scope.array = [];
@@ -25,30 +25,24 @@
       "endNum": ""  
     };  
 
+
     
     //设置查询条件，只从后台中选出checked属性值为false的项
-    $scope.newFilters = 'false,0';
-    //每页数据的查询条件
+    $scope.newFilters = encodeURI('false,0');//这里填写api文档中的查询条件filters
+    //设置查询条件中的limit&offset的值
     $scope.Parameters={
       "limit": $scope.limit,
       "offset": $scope.offset
     };
-    
-    //获取证书列表数据
-    $http.get(getCertsApi+'?'+'params='+$scope.newFilters).success(function(data){
-      $scope.approveList = data;
-      $scope.array = $scope.approveList;
-      //分页总数
-      $scope.pageSize = 5;
-      $scope.selPage = 1;
-      $scope.cutPage(); 
-    });
     //获取第一页的数据
     
-    console.log($scope.newUri);
+    //api文档中还没写好，之后还需要更改
     $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
               ,{params:$scope.Parameters}).success(function(data){
       $scope.tracePageData =data;
+      $scope.pageSize = 5;
+      $scope.selPage = 1;
+      $scope.cutPage(); 
     }).error(function(data){
       alert("选择失败");
     });
@@ -68,7 +62,8 @@
     $scope.setData = function(){
     //通过当前页数筛选出表格当前显示数据
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
-      $scope.Parameters._start = $scope.offset;
+      $scope.Parameters.offset = $scope.offset;
+      //api文档中还没写好，之后还需要更改
       $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
               ,{params:$scope.Parameters}).success(function(data){
         $scope.tracePageData =data;
@@ -117,14 +112,14 @@
     //查询
     $scope.search = function(){ 
       $scope.selectComp = '';
+      //api文档中还没写好，之后还需要更改
       $scope.selectComp = "\'" + $scope.filters.startComp + "\'" +","+ "\'" + $scope.filters.endComp + "\'" + ","
-                           /*+ "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" */
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'" +","
                            + "\'" + $scope.filters.startNum + "\'"+ ","+"\'" + $scope.filters.endNum + "\'";
       $scope.newParams = encodeURI($scope.selectComp);
       console.log($scope.newParams);
-      $http.get(getCertsApi+ '?params='+$scope.newParams).success(function(data){
+      $http.get(getCertsApi+ '?filters='+ $scope.newFilters+'&params='+$scope.newParams,{params:$scope.Parameters}).success(function(data){
         $scope.tracePageData = data; 
       });
     };

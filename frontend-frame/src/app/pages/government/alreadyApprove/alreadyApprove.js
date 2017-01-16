@@ -22,36 +22,35 @@
       "companyName": ""
     };  
 
-    //设置查询条件，从后台中选出审批通过的
-    $scope.newFilters = 'true,1';
+    //设置查询条件格式
+   $scope.newFilters =encodeURIComponent('{companyName: {$regex: #},_created:{$gte:#},_created:{$lte:#},status:#}');
+    console.log($scope.newFilters);
     //每页数据的查询条件
     $scope.Parameters={
       "limit": $scope.limit,
       "offset": $scope.offset
     };
     
-    //获取证书列表数据
-    $http.get(getCertsApi+'?'+'params='+$scope.newFilters).success(function(data){
-      $scope.approveList = data;
-      $scope.array = $scope.approveList;
-      //分页总数
+    //设置查询条件的参数值并encode
+    $scope.newParameters = "\' \'"+"\' \'"+ "\' \'"+ 1;
+    $scope.newParame = encodeURI($scope.newParameters);
+
+    //获取第一页的数据
+    console.log($scope.newUri);
+    $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
+    .success(function(data,headers){
+      $scope.alreadyPageData =data;
+      $scope.rowCount = headers;
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
-    });
-    //获取第一页的数据
-    
-    console.log($scope.newUri);
-    $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
-              ,{params:$scope.Parameters}).success(function(data){
-      $scope.alreadyPageData =data;
     }).error(function(data){
       alert("选择失败");
     });
 
     //分页
     $scope.cutPage = function(){
-      $scope.pages = Math.ceil($scope.approveList.length /*$scope.rowCount*/ / $scope.pageSize);//分页数
+      $scope.pages = Math.ceil($scope.rowCount / $scope.pageSize);//分页数
       console.log($scope.pages);
       $scope.newPages = $scope.pages >5?5:$scope.pages;
       $scope.pageList = [];
@@ -64,10 +63,11 @@
     $scope.setData = function(){
     //通过当前页数筛选出表格当前显示数据
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
-      $scope.Parameters._start = $scope.offset;
-      $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
-              ,{params:$scope.Parameters}).success(function(data){
-        $scope.alreadyPageData =data;
+      $scope.Parameters.offset = $scope.offset;
+      $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
+    .success(function(data,headers){
+      $scope.alreadyPageData =data;
+      $scope.rowCount = headers;
       }).error(function(data){
         alert("选择失败");
       });
@@ -118,8 +118,11 @@
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
       $scope.newParams = encodeURI($scope.selectComp);
       console.log($scope.newParams);
-      $http.get(getCertsApi+ '?params='+$scope.newParams).success(function(data){
+      $http.get(getCertsApi+'?filters='+ $scope.newFilters+ '&params='+$scope.newParams,{params:$scope.Parameters})
+      .success(function(data,headers){
         $scope.alreadyPageData = data; 
+        $scope.rowCount = headers;
+        cutPage();
       });
     };
 

@@ -6,31 +6,28 @@
 
   /** @ngInject */
   function DistributionCtrl($scope, $http, toastr, $filter) {
-
+    var getDensitysApi = "http://localhost:3003/densitys"
     $scope.filters={
-      "startDate": "",
-      "endDate": "",
-      "companyName": ""
+        "year": "",
+        "companyName": ""
     };
+    $scope.newfilters = encodeURI('{year:#,companyName:#}');
+    console.log($scope.newfilters);
     
     $scope.showTable = function(){
 
+
       $scope.selectComp = '';
-      $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
-                           + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
-                           +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
+      $scope.selectComp ="\'"+ $scope.filters.year + "\'"+","
+                         + "'.*"+ $scope.filters.companyName + ".*'";
       $scope.newParams = encodeURI($scope.selectComp);
       console.log($scope.newParams);
-      $http.get(getCertsApi+ '?params='+$scope.newParams).success(function(data){
+      $http.get(getCertsApi+ '?filters='+$scope.newfilters +'&params=' + $scope.newParams).success(function(data){
         $scope.distributionData = data; 
       });
     };
 
-    var randomData = function(){
-      
-        return Math.round(Math.random()*1000);
 
-    };
 
 $scope.mapConfig = {
                                 theme:'default',
@@ -39,93 +36,122 @@ $scope.mapConfig = {
         };
 
 
+var geoCoordMap = {
+    '比克电池':[114.437302,22.617655],
+            '比亚迪汽车':[114.433617,22.632961],
+            '奇瑞汽车':[118.432941,31.352859],
+            '众泰汽车':[113.957100,22.580023],
+            '福特汽车':[121.553993,31.126375],
+            '乾泰':[114.293350,22.779459],
+            '一汽':[125.226006,43.846668],
+            '东风日产':[113.168143,23.379142],
+            '宇通客车':[113.867538,34.692932]
+};
+
+var convertData = function (data) {
+    var res = [];
+    for (var i = 0; i < data.length; i++) {
+        var geoCoord = geoCoordMap[data[i].name];
+        if (geoCoord) {
+            res.push({
+                name: data[i].name,
+                value: geoCoord.concat(data[i].value)
+            });
+        }
+    }
+    return res;
+};
 
 $scope.mapOption = {
+    backgroundColor: '#404a59',
     title: {
-        text: '密度分布',
+        text: '厂家电池密度分布',
         subtext: '',
-        left: 'center'
+        sublink: '',
+        x:'center',
+        textStyle: {
+            color: '#fff'
+        }
     },
     tooltip: {
-        trigger: 'item'
+        trigger: 'item',
+        formatter: function (params) {
+            return params.name + ' : ' + params.value[2];
+        }
     },
     legend: {
         orient: 'vertical',
-        left: 'left',
-        data:['厂家电池密度']
+        y: 'bottom',
+        x:'right',
+        data:['密度分布'],
+        textStyle: {
+            color: '#fff'
+        }
     },
     visualMap: {
         min: 0,
-        max: 2500,
-        left: 'left',
-        top: 'bottom',
-        text: ['高','低'],           // 文本，默认为数值文本
-        calculable: true
+        max: 200,
+        calculable: true,
+        inRange: {
+            color: ['#50a3ba', '#eac736', '#d94e5d']
+        },
+        textStyle: {
+            color: '#fff'
+        }
     },
-    toolbox: {
-        show: true,
-        orient: 'vertical',
-        left: 'right',
-        top: 'center',
-        feature: {
-            dataView: {readOnly: false},
-            restore: {},
-            saveAsImage: {}
+    geo: {
+        map: 'china',
+        label: {
+            emphasis: {
+                show: false
+            }
+        },
+        itemStyle: {
+            normal: {
+                areaColor: '#323c48',
+                borderColor: '#111'
+            },
+            emphasis: {
+                areaColor: '#2a333d'
+            }
         }
     },
     series: [
         {
-            name: '厂家电池密度',
-            type: 'map',
-            mapType: 'china',
-            roam: true,
+            name: '密度分布',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertData( //以后将这里改为$scope.distributionData
+                [
+                {name: "比克电池", value: 9},
+                {name: "比亚迪汽车", value: 120},
+                {name: "奇瑞汽车", value: 90},
+                {name: "众泰汽车", value: 40},
+                {name: "福特汽车", value: 14},
+                {name: "乾泰", value: 50},
+                {name: "一汽", value: 16},
+                {name: "东风日产", value: 18},
+                {name: "宇通客车", value: 18}
+            ]),
+            symbolSize: 12,
             label: {
                 normal: {
-                    show: true
+                    show: false
                 },
                 emphasis: {
-                    show: true
+                    show: false
                 }
             },
-            data:[
-                {name: '北京',value: randomData() },
-                {name: '天津',value: randomData() },
-                {name: '上海',value: randomData() },
-                {name: '重庆',value: randomData() },
-                {name: '河北',value: randomData() },
-                {name: '河南',value: randomData() },
-                {name: '云南',value: randomData() },
-                {name: '辽宁',value: randomData() },
-                {name: '黑龙江',value: randomData() },
-                {name: '湖南',value: randomData() },
-                {name: '安徽',value: randomData() },
-                {name: '山东',value: randomData() },
-                {name: '新疆',value: randomData() },
-                {name: '江苏',value: randomData() },
-                {name: '浙江',value: randomData() },
-                {name: '江西',value: randomData() },
-                {name: '湖北',value: randomData() },
-                {name: '广西',value: randomData() },
-                {name: '甘肃',value: randomData() },
-                {name: '山西',value: randomData() },
-                {name: '内蒙古',value: randomData() },
-                {name: '陕西',value: randomData() },
-                {name: '吉林',value: randomData() },
-                {name: '福建',value: randomData() },
-                {name: '贵州',value: randomData() },
-                {name: '广东',value: randomData() },
-                {name: '青海',value: randomData() },
-                {name: '西藏',value: randomData() },
-                {name: '四川',value: randomData() },
-                {name: '宁夏',value: randomData() },
-                {name: '海南',value: randomData() },
-                {name: '台湾',value: randomData() },
-                {name: '香港',value: randomData() },
-                {name: '澳门',value: randomData() }
-            ]
+            itemStyle: {
+                emphasis: {
+                    borderColor: '#fff',
+                    borderWidth: 1
+                }
+            }
         }
     ]
-};
+}
+
 
 
     }
