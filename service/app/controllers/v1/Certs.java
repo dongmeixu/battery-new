@@ -2,15 +2,18 @@ package controllers.v1;
 
 import com.google.common.base.Strings;
 import controllers.api.API;
+import edu.ustb.security.domain.vo.ecc.Pair;
+import edu.ustb.security.service.ecc.impl.CpkCoresImpl;
+import edu.ustb.security.domain.vo.ecc.Pair;
 import models.Cert;
 import models.Module;
 import org.apache.commons.lang.StringUtils;
 
+import java.math.BigInteger;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.ivy.osgi.util.ZipUtil;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 import play.Logger;
@@ -20,6 +23,7 @@ import play.data.validation.Range;
 import play.data.validation.Required;
 import play.libs.Files;
 import play.libs.IO;
+import play.libs.Images;
 import play.vfs.VirtualFile;
 import utils.SafeGuard;
 
@@ -31,9 +35,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import java.util.zip.ZipOutputStream;
 
 import static java.lang.System.in;
+import static play.libs.Files.zip;
 import static play.modules.jongo.BaseModel.getCollection;
 
 /**
@@ -42,6 +46,8 @@ import static play.modules.jongo.BaseModel.getCollection;
  */
 public class Certs extends API {
 
+
+    private static CpkCoresImpl cpkCores;
     public static String certFilesPath = Play.configuration.getProperty("attachments.path") + File.separator + "certs";
     public static String uploadsPath = certFilesPath + File.separator + "uploads";//上传的法人证书保存地址
     public static String producesPath = certFilesPath + File.separator + "produces";//保存审批后生成法人CPK证书
@@ -104,16 +110,15 @@ public class Certs extends API {
              *  2.将3个字符串各生成一个文件
              *  3.将2中的文件压缩成一个zip包
              */
-         /*   String tradeSk = generateSkById(社会信用码).toString;
-            String productSK = generateSkById(厂商代码).toString;
-            String matrix = CpkMatrixsFactory.generateCpkMatrix().toJson();
-            */
+           /* String tradeSk = cpkCores.generateSkById(cert.getCreditCode()).toString();
+            String productSK = cpkCores.generateSkById(cert.getVendorCode()).toString();
+            String matrix = CpkMatrixsFactory.generateCpkMatrix().toJson();*/
+            String tradeSk = "demo-1";
+            String productSK = "demo-2";
+            String matrix = "demo-3";
             /**
              * 将 3个字符串分别写入到 3个文件中
              */
-            String tradeSk = "wwww";
-            String productSK = "aaaaa";
-            String matrix = "ssss";
             String[] strs = {tradeSk,productSK,matrix};
             for(String str: strs) {
                 IO.write(str.getBytes(),new File(producesPath + File.separator + UUID.randomUUID() + ".txt"));
@@ -123,11 +128,19 @@ public class Certs extends API {
              */
             File file = new File(producesPath);
             File[] fileList = file.listFiles();//读取produces目录下生成的3个CPK证书
-            File zipFile = new File(producesPath + File.separator + UUID.randomUUID() + ".zip");
-            for(int i=0;i<fileList.length;i++) {
+            File zipFile = new File(certFilesPath + File.separator + UUID.randomUUID() + ".zip");
+
+            /*           for(int i=0;i<fileList.length;i++) {
                 Files.copy(fileList[i],zipFile);
                 //Files.delete(fileList[i]);
-            }
+            }*/
+
+
+            Files.zip(file,zipFile);
+            Files.delete(file);
+         /*   for(int i=0;i<fileList.length;i++) {
+                Files.delete(fileList[i]);
+            }*/
 
 /*
             FileOutputStream outputStream = new FileOutputStream(zipFile);
@@ -150,6 +163,8 @@ public class Certs extends API {
             }*/
         }
     }
+
+
 
     /**
      * 3.查询企业的证书信息
@@ -192,6 +207,7 @@ public class Certs extends API {
         Logger.info("upload file name：" + attachment.getName());
         Boolean b = attachment.getName().endsWith(".zip");
         if(b) {//上传的是zip,需要解压
+           // Files.unzip(attachment,new File(uploadsPath));
             File pathFile = new File(uploadsPath);
             if(!pathFile.exists()) {
                 pathFile.mkdirs();
@@ -242,22 +258,21 @@ public class Certs extends API {
         /**
          * 调用sign(BigInteger sk,String moduleId)接口生成签名
          */
-     /*   String str = "2222344453532";
-        BigInteger sk = new BigInteger(str);//BigInteger类型的私钥
-        Pair pair = sign(sk,moduleId);//根据私钥、电池编号(流水号)生成签名信息
+        BigInteger sk = new BigInteger("9898493849389849");//BigInteger类型的私钥
+        Pair pair = cpkCores.sign(sk,moduleId);//根据私钥、电池编号(流水号)生成签名信息
 
-        *//**
+        /**
          * 调用 generateQRcode(OutputStream fos,String moduleId,Pair pair)生成二维码
-         *//*
+         */
         File file = new File(QRPath);
         OutputStream fos = new FileOutputStream(file);
-        generateQRcode(fos,moduleId,pair);//生成二维码到指定输出流
-        *//**
+        cpkCores.generateQRcode(fos,moduleId,pair);//生成二维码到指定输出流
+        /**
          * 调用 Images.toBase64(File image);
          * 将二维码图片转化为 base64字符串
-         *//*
+         */
         Images.toBase64(file);
-        fos.close();*/
+        fos.close();
     }
 
     /**

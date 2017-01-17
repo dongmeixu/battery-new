@@ -76,16 +76,20 @@ public class Trades extends API {
         }
     }
 
-    /**
+/*
+    */
+/**
      * 4.获取流量分析图
      * @param beginModuleId
      * @param endModuleId
-     */
-    public static void flowAnalysis(@Required String beginModuleId,@Required String endModuleId) {
+     *//*
+
+    public static void flowAnalysis(String filters, @As(value = ",") List<String> params,) {
         String sql = "{moduleId: {\"$gte\": " + beginModuleId + ", \"$lte\": " + endModuleId + "}}";
         List<Module> modules = StreamSupport.stream(getCollection(Module.class).find(sql).as(Module.class).spliterator(),false).collect(Collectors.toList());
         renderJSON(modules);
     }
+*/
 
     /**
      * 5.获取密度分析图
@@ -93,7 +97,7 @@ public class Trades extends API {
      * @param endModuleId
      */
     public static void densityAnalysis(@Required String beginModuleId,@Required String endModuleId) {
-        flowAnalysis(beginModuleId,endModuleId);
+       // flowAnalysis(beginModuleId,endModuleId);
     }
 
     /**
