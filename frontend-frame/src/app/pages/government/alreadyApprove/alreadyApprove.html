@@ -1,6 +1,6 @@
-<div class="row">
-    <div class="col-md-12">
-      <div ba-panel ba-panel-title="已审批证书查看" ba-panel-class="with-scroll" class="panel-primary">
+
+   
+      <div  title="已审批证书查看" class="panel-primary">
 <div class="horizontal-scroll">
   <div class="panel panel-success">
     <div class="panel-body panel-success">
@@ -9,7 +9,7 @@
         <div class="col-md-5">
           <form class="form-inline" role="form">
             <div class="form-group">
-              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
+              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="起止时间" name="" ng-model="filters.startDate">
               <span>&nbsp--&nbsp</span>
               <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filters.endDate">
             </div>
@@ -24,15 +24,20 @@
           <button type="button" class="btn btn-primary" data-toggle="button" ng-click="search()">查询</button>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-1"><button type="button" class="btn btn-success" ng-click="approveSuccess()">审核通过</button></div>
-        <div class="col-md-2 "><button type="button" class="btn btn-danger" ng-click="approveFail()">审核不通过</button></div>
-      </div>
+      
     </div>
   </div>
+  </div>
+
+
 
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
+      <style>
+      #demo{overflow:hidden;width:120px;text-align:center;padding:10px;}
+      #demo img{border:none;width:30px;height:30px;border:5px solid #f4f4f4}
+      #enlarge_images{position:absolute;display:none;z-index:2;border:5px solid #f4f4f4}
+      </style>
       <tr class="sortable ">
         <th st-sort="firstName">申请日期</th>
         <th st-sort="lastName">申请序号</th>
@@ -55,7 +60,12 @@
         <td>{{item.contact}}</td>
         <td>{{item.phone}}</td>
         <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
-        <td style="text-align: center;"><a href="{{item.certfile}}"><i class="ion-eye"></i></a></td>
+        <td>
+        <div id="demo" style="overflow:hidden;width:120px;text-align:center;padding:10px">
+        <img id="img" onmousemove="bigger(this)" onmouseout="smaller(this)" onclick="openImg(this)" src="http://www.51xuediannao.com/uploads/soft/texiao/img2img/img2img.jpg"   />
+        </div>
+        <div id="enlarge_images"></div> 
+        </td>
       </tr>
     </tbody>
     <tfoot>
@@ -69,8 +79,8 @@
               </label>
             </div> -->
             <!-- <div class="col-md-4 col-md-offset-2" st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div> -->
-            <div   class="col-md-4 col-md-offset-2">
-              <ul class="pagination">
+            <div   class="col-md-4 col-md-offset-4">
+              <ul class="pagination" style="margin:auto;">
                 <!-- <li><a href="#">上一页</a></li>
                 <li><a href="#">下一页</a></li> -->
 
@@ -97,6 +107,25 @@
     </tfoot>
   </table>
 </div>
-</div>
-</div>
-</div>
+<script type="text/javascript">
+ function bigger(img){
+  var ei = document.getElementById("enlarge_images");
+  event = event || window.event;
+    ei.style.display = "block";
+    ei.innerHTML = '<img src="' + img.src + '" />';
+    ei.style.top  = document.body.scrollTop + event.clientY - 200 + "px";
+    ei.style.left = document.body.scrollLeft + event.clientX - 600 + "px";
+ }
+ 
+ function smaller(img){
+
+  var ei = document.getElementById("enlarge_images");
+  ei.innerHTML = "";
+    ei.style.display = "none";
+ }
+
+ function openImg(img){
+  window.open( img.src );
+ }
+
+</script>

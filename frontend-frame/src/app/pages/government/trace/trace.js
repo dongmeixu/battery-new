@@ -2,12 +2,12 @@
   'use strict';
 
   angular.module('BlurAdmin.pages.government')
-  .controller('alreadyApproveCtrl', alreadyApproveCtrl);
+  .controller('TraceCtrl', TraceCtrl);
 
   /** @ngInject */
-  function alreadyApproveCtrl($scope, $http, toastr, $filter) {
+  function TraceCtrl($scope, $http, toastr, $filter) {
 
-    var getCertsApi = "http://localhost:3003/certs";
+    var getCertsApi = "http://localhost:3003/trades";
     $scope.approveList = [];
     $scope.idList = [];
     $scope.array = [];
@@ -15,32 +15,31 @@
     $scope.offset = 0;
     $scope.Parameters = '';
     $scope.rowCount = 10;
-    
+
     $scope.filters = {
+      "startComp": "",
+      "endComp": "",
       "startDate": "",
       "endDate": "",
-      "companyName": ""
+      "startNum": "",
+      "endNum": ""  
     };  
 
-    //设置查询条件格式
-   $scope.newFilters =encodeURIComponent('{companyName: {$regex: #},_created:{$gte:#},_created:{$lte:#},status:#}');
-    console.log($scope.newFilters);
-    //每页数据的查询条件
+
+    
+    //设置查询条件，只从后台中选出checked属性值为false的项
+    $scope.newFilters = encodeURI('false,0');//这里填写api文档中的查询条件filters
+    //设置查询条件中的limit&offset的值
     $scope.Parameters={
       "limit": $scope.limit,
       "offset": $scope.offset
     };
-    
-    //设置查询条件的参数值并encode
-    $scope.newParameters = "\' \'"+"\' \'"+ "\' \'"+ 1;
-    $scope.newParame = encodeURI($scope.newParameters);
-
     //获取第一页的数据
-    console.log($scope.newUri);
-    $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
-    .success(function(data,headers){
-      $scope.alreadyPageData =data;
-      $scope.rowCount = headers;
+    
+    //api文档中还没写好，之后还需要更改
+    $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
+              ,{params:$scope.Parameters}).success(function(data){
+      $scope.tracePageData =data;
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
@@ -50,7 +49,7 @@
 
     //分页
     $scope.cutPage = function(){
-      $scope.pages = Math.ceil($scope.rowCount / $scope.pageSize);//分页数
+      $scope.pages = Math.ceil($scope.approveList.length /*$scope.rowCount*/ / $scope.pageSize);//分页数
       console.log($scope.pages);
       $scope.newPages = $scope.pages >5?5:$scope.pages;
       $scope.pageList = [];
@@ -64,10 +63,10 @@
     //通过当前页数筛选出表格当前显示数据
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters.offset = $scope.offset;
-      $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
-    .success(function(data,headers){
-      $scope.alreadyPageData =data;
-      $scope.rowCount = headers;
+      //api文档中还没写好，之后还需要更改
+      $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
+              ,{params:$scope.Parameters}).success(function(data){
+        $scope.tracePageData =data;
       }).error(function(data){
         alert("选择失败");
       });
@@ -113,16 +112,15 @@
     //查询
     $scope.search = function(){ 
       $scope.selectComp = '';
-      $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
+      //api文档中还没写好，之后还需要更改
+      $scope.selectComp = "\'" + $scope.filters.startComp + "\'" +","+ "\'" + $scope.filters.endComp + "\'" + ","
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
-                           +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
+                           +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'" +","
+                           + "\'" + $scope.filters.startNum + "\'"+ ","+"\'" + $scope.filters.endNum + "\'";
       $scope.newParams = encodeURI($scope.selectComp);
       console.log($scope.newParams);
-      $http.get(getCertsApi+'?filters='+ $scope.newFilters+ '&params='+$scope.newParams,{params:$scope.Parameters})
-      .success(function(data,headers){
-        $scope.alreadyPageData = data; 
-        $scope.rowCount = headers;
-        cutPage();
+      $http.get(getCertsApi+ '?filters='+ $scope.newFilters+'&params='+$scope.newParams,{params:$scope.Parameters}).success(function(data){
+        $scope.tracePageData = data; 
       });
     };
 
