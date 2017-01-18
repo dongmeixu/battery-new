@@ -7,7 +7,7 @@
             <div class="form-group">
               <input class="form-control" style="width: 180px" type="date"  style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
               <span>&nbsp--&nbsp</span>
-              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="date" value="2017-01-01"placeholder="截止时间" name="" ng-model="filters.endDate">
+              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="date" value="2017-01-01" placeholder="截止时间" name="" ng-model="filters.endDate">
             </div>
           </form>
         </div>
@@ -29,11 +29,7 @@
 
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
-      <style>
-      #demo{overflow:hidden;width:120px;text-align:center;padding:10px;}
-      #demo img{border:none;width:30px;height:30px;border:5px solid #f4f4f4}
-      #enlarge_images{position:absolute;display:none;z-index:2;border:5px solid #f4f4f4}
-      </style>
+ 
       <tr class="sortable ">
         <th style="text-align: center;"><input type="checkbox" ng-model="select_all" ng-change="selectAll()" ></th>
         <th st-sort="firstName">申请日期</th>
@@ -61,9 +57,9 @@
         <!-- <td style="text-align: center;"><a href="{{item.certfile}}"><i class="ion-eye"></i></a></td> -->
         <td>
         <div id="demo" style="overflow:hidden;width:120px;text-align:center;padding:10px">
-        <img id="img" onmousemove="bigger(this)" onmouseout="smaller(this)" onclick="openImg(this)" src="http://www.51xuediannao.com/uploads/soft/texiao/img2img/img2img.jpg"   />
+        <img id="img" onmousemove="bigger(this)" onmouseout="smaller(this)" onclick="openImg(this)" style="border:none;width:30px;height:30px;" src="http://a.hiphotos.baidu.com/baike/w%3D268%3Bg%3D0/sign=fa4dc22a728b4710ce2ffacafbf5a4c0/1b4c510fd9f9d72a20b52a16d42a2834359bbbe3.jpg"   />
         </div>
-        <div id="enlarge_images"></div>
+        <div id="enlarge_images" style="position:absolute;display:none;z-index:2;"></div>
         </td>
       </tr>
     </tbody>
@@ -101,6 +97,7 @@
               </ul>
             </div>
           </div>
+          <br>
         </td>
       </tr>
     </tfoot>
@@ -113,8 +110,10 @@
   event = event || window.event;
     ei.style.display = "block";
     ei.innerHTML = '<img src="' + img.src + '" />';
-    ei.style.top  = document.body.scrollTop + event.clientY - 200 + "px";
-    ei.style.left = document.body.scrollLeft + event.clientX - 600 + "px";
+    ei.style.width = 300+"px";
+    ei.style.height = 300+ "px";
+    ei.style.top  = document.body.scrollTop + event.clientY - 100 + "px";
+    ei.style.left = document.body.scrollLeft + event.clientX - 300 + "px";
  }
  
  function smaller(img){

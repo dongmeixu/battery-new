@@ -7,7 +7,7 @@
   /** @ngInject */
   function TraceCtrl($scope, $http, toastr, $filter) {
 
-    var getCertsApi = "http://localhost:3003/trades";
+    var getTradesApi = "http://localhost:3003/trades";
     $scope.approveList = [];
     $scope.idList = [];
     $scope.array = [];
@@ -15,6 +15,7 @@
     $scope.offset = 0;
     $scope.Parameters = '';
     $scope.rowCount = 10;
+    $scope.newDetailData =[];
 
     $scope.filters = {
       "startComp": "",
@@ -37,19 +38,21 @@
     //获取第一页的数据
     
     //api文档中还没写好，之后还需要更改
-    $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
-              ,{params:$scope.Parameters}).success(function(data){
+    $http.get(getTradesApi/*+'?' +'params=' + $scope.newFilters*/
+              ,{params:$scope.Parameters}).success(function(data,headers){
       $scope.tracePageData =data;
+      //$scope.rowCount = headers.X-Total-Count;
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
     }).error(function(data){
-      alert("选择失败");
+      toastr.error('数据获取失败', '', {});
+          console.log("error: ", data);
     });
 
     //分页
     $scope.cutPage = function(){
-      $scope.pages = Math.ceil($scope.approveList.length /*$scope.rowCount*/ / $scope.pageSize);//分页数
+      $scope.pages = Math.ceil($scope.rowCount / $scope.pageSize);//分页数
       console.log($scope.pages);
       $scope.newPages = $scope.pages >5?5:$scope.pages;
       $scope.pageList = [];
@@ -67,8 +70,13 @@
       $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
               ,{params:$scope.Parameters}).success(function(data){
         $scope.tracePageData =data;
+        toastr.success('数据获取成功', '', {
+           "timeOut": "1000",
+           "closeButton": false,
+          });
       }).error(function(data){
-        alert("选择失败");
+        toastr.error('数据获取失败', '', {});
+          console.log("error: ", data);
       });
     },
 
@@ -119,9 +127,27 @@
                            + "\'" + $scope.filters.startNum + "\'"+ ","+"\'" + $scope.filters.endNum + "\'";
       $scope.newParams = encodeURI($scope.selectComp);
       console.log($scope.newParams);
-      $http.get(getCertsApi+ '?filters='+ $scope.newFilters+'&params='+$scope.newParams,{params:$scope.Parameters}).success(function(data){
+      $http.get(getTradesApi+ '?filters='+ $scope.newFilters+'&params='+$scope.newParams,{params:$scope.Parameters}).success(function(data){
         $scope.tracePageData = data; 
+      }).error(function(){
+        toastr.error('查询数据失败', '', {});
+          console.log("error: ", data);
       });
+    },
+
+    $scope.checkDetail = function(item){
+      $scope.newDetailData =[];
+      $scope.productId = item.id;
+      $scope.modelId = item.creditCode;
+      $http.get(getTradesApi+"/"+item.id).success(function(data){
+            $scope.detailData = data;
+            $scope.newDetailData = $scope.detailData;
+      }).error(function(){
+        toastr.error('查询数据失败', '', {});
+          console.log("error: ", data);
+      });
+
+
     };
 
 
