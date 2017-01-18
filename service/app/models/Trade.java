@@ -41,17 +41,45 @@ public class Trade extends BaseModel implements Jsonable {
   @Required
   private String id = null;
 
+  /**
+   * 卖方企业ID
+   */
   @Required
   private String fromId = null;
 
+  /**
+   * 卖方企业名称
+   */
   @Required
   private String from = null;
+  /**
+   * 卖方企业的分支机构名称
+   */
+ String  fromBranch;
+  /**
+   * 交易发生地点的经度
+   */
+  private Double longitude = null;
 
+  /**
+   * 交易发生地点的纬度
+   */
+  private Double latitude = null;
+  /**
+   * 买方企业名称
+   */
   @Required
   private String to = null;
 
+  /**
+   * 买方企业Id
+   */
   @Required
   private String toId = null;
+  /**
+   * 买方企业分支机构名称
+   */
+  String toBranch;
 
   @Required
   private List<String> productIds = new ArrayList<String>();

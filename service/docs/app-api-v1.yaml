@@ -350,14 +350,14 @@ paths:
       summary: '上传汽车（与电池包对应关系）数据'
       description: '汽车制造商上传汽车与电池包的对应关系'
       consumes:
-      - 'application/json'
+        - 'application/json'
       parameters:
-      - in: 'body'
-        name: 'package'
-        description: '汽车基本信息.'
-        required: true
-        schema:
-          $ref: '#/definitions/Car'
+        - in: 'body'
+          name: 'package'
+          description: '汽车基本信息.'
+          required: true
+          schema:
+            $ref: '#/definitions/Car'
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
@@ -431,9 +431,9 @@ paths:
             description: 证书申请信息
             required: true
             schema:
-              $ref: '#/definitions/Cert'
+              $ref: '#/definitions/Company'
         tags:
-          - Certs
+          - 证书
         responses:
           201:
             description: 提交成功，等待审核
@@ -490,14 +490,14 @@ paths:
             default: 0
             description: 起始位置
         tags:
-          - Certs
+          - 证书
         responses:
           200:
             description: 成功
             schema:
               type: array
               items:
-                $ref: '#/definitions/Cert'
+                $ref: '#/definitions/Company'
             headers:
               X-Total-Count:
                 type: integer
@@ -545,7 +545,7 @@ paths:
           - 1
           - 2
       tags:
-        - Certs
+        - 证书
       responses:
         200:
           description: 成功
@@ -581,7 +581,7 @@ paths:
           description: 证书id
           required: true
       tags:
-         - Certs
+         - 证书
       responses:
         200:
           description: 成功
@@ -618,12 +618,12 @@ paths:
           type: string
           required: true
       tags:
-        - Certs
+        - 证书
       responses:
         200:
           description: 成功
           schema:
-            $ref: '#/definitions/Cert'
+            $ref: '#/definitions/Company'
 
         400:
           description: '错误的资源请求'
@@ -666,7 +666,7 @@ paths:
           description: 文字说明
           type: string
       tags:
-         - Certs
+         - 证书
       responses:
         201:
           description: 成功
@@ -701,7 +701,6 @@ paths:
            required: true
            type: file
       tags:
-         - Certs
          - 证书
       responses:
         201:
@@ -744,7 +743,8 @@ paths:
            description: 电池模组id(流水号)
            required: true
       tags:
-         - Codes
+         - 二维码
+         - 厂商
       responses:
          201:
           description: 服务器正常返回, 二维码图片的base64
@@ -769,7 +769,8 @@ paths:
            description: 截止电池模组id(截止流水号)
            required: true
       tags:
-         - Codes
+         - 二维码
+         - 厂商
       responses:
          201:
           description: 服务器正常返回
@@ -807,22 +808,40 @@ paths:
           items:
             type: string
       tags:
-        - Flows
+        - 统计分析
+        - 认证中心
       responses:
          200:
           description: 服务器正常返回统计结果数据
           schema:
-            properties:
-              from:
-                type: string
-              to:
-                type: string
-              count:
-                type: integer
-          headers:
-            X-Total-Count:
-              type: integer
-              description: 总行数
+              properties:
+                geos:
+                  type: array
+                  uniqueItems: true
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        description: data中的from和to的名字
+                      longitude:
+                        type: number
+                        format: double
+                      latitude:
+                        type: number
+                        format: double
+                data:
+                  type: array
+                  uniqueItems: true
+                  items:
+                    properties:
+                      from:
+                        type: string
+                        description: 源厂商（分支机构）的名称
+                      to:
+                        type: string
+                        description: 目的厂商（分支机构）名称
+                      count:
+                        type: integer
 
   '/densitys':
     get:
@@ -851,14 +870,30 @@ paths:
           description: 服务器正常返回d
           schema:
             properties:
-              companyName:
-                type: string
-              count:
-                type: string
-          headers:
-            X-Total-Count:
-              type: integer
-              description: 总行数
+              geos:
+                type: array
+                uniqueItems: true
+                items:
+                  properties:
+                    name:
+                      type: string
+                      description: data中的province的名字
+                    longitude:
+                      type: number
+                      format: double
+                    latitude:
+                      type: number
+                      format: double
+              data:
+                type: array
+                uniqueItems: true
+                items:
+                  properties:
+                    province:
+                      type: string
+                      description: 省份名称
+                    count:
+                      type: integer
 
   '/auth':
     post:
@@ -918,60 +953,81 @@ paths:
             $ref: '#/definitions/User'
 
 definitions:
-  Cert:
+  Company:
     type: object
-    properties:
-      companyType:
-        type: integer
-        description: 企业类型(0:电池厂商 1:汽车厂商)
-      companyId:
-        type: integer
-        description: 企业Id
-      companyName:
-        type: string
-        description: 企业名称
-      creditCode:
-        type: string
-        description: 社会信用码
-      vendorCode:
-        type: string
-        description: 电池厂的厂商代码
-      contact:
-        type: string
-        description: 联系人
-      phone:
-        type: string
-        description: 联系电话
-      email:
-        type: string
-        description: 电子邮箱
-      licensePicture:
-        type: string
-        format: byte
-        description: base64后的营业执照图片
-      status:
-        type: integer
-        description: '申请证书的状态: 0:未审核(默认) 1：审核通过 2：审核不通过'
-        enum:
-          - 0
-          - 1
-          - 2
-      tradeSK:
-        type: string
-        description: 交易用私钥内容
-      productSK:
-        type: string
-        description: 产品(电池包和模组)二维码生成用的私钥内容
-
-    required:
-      - companyType
-      - companyId
-      - companyName
-      - creditCode
-      - vendorCode
-      - phone
-      - email
-
+    allOf:
+      - $ref: "#/definitions/BaseModel"
+      - required:
+        - companyType
+        - companyId
+        - companyName
+        - creditCode
+        - vendorCode
+        - phone
+        - email
+        properties:
+          companyType:
+            type: integer
+            description: 企业类型(0:电池厂商 1:汽车厂商)
+          companyId:
+            type: integer
+            description: 企业Id
+          companyName:
+            type: string
+            description: 企业名称
+          creditCode:
+            type: string
+            description: 社会信用码
+          province:
+            type: string
+            description: 企业所在省份
+          city:
+            type: string
+            description: 企业所在城市
+          dom:
+            type: string
+            description: 企业地址
+          longitude:
+            type: number
+            format: double
+            description: 企业所在地址经度
+          latitude:
+              type: number
+              format: double
+              description: 企业所在地址经度
+          vendorCode:
+            type: string
+            description: 电池厂的厂商代码
+          contact:
+            type: string
+            description: 联系人
+          phone:
+            type: string
+            description: 联系电话
+          email:
+            type: string
+            description: 电子邮箱
+          licensePicture:
+            type: string
+            format: byte
+            description: base64后的营业执照图片
+          branches:
+            type: array
+            items:
+              $ref: '#/definitions/Branch'
+          status:
+            type: integer
+            description: '申请证书的状态: 0:未审核(默认) 1：审核通过 2：审核不通过'
+            enum:
+              - 0
+              - 1
+              - 2
+          tradeSK:
+            type: string
+            description: 交易用私钥内容
+          productSK:
+            type: string
+            description: 产品(电池包和模组)二维码生成用的私钥内容
     example:
       companyType: 1
       companyId: 21424
@@ -984,6 +1040,35 @@ definitions:
       status: 0
       licensePicture: data:image/png;base64,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
 
+  Branch:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 企业分支机构名称
+      province:
+        type: string
+        description: 企业分支机构所在省份
+      city:
+        type: string
+        description: 企业分支机构所在城市
+      dom:
+        type: string
+        description: 企业分支机构地址
+      longitude:
+        type: number
+        format: double
+        description: 企业分支机构所在地址经度
+      latitude:
+          type: number
+          format: double
+          description: 企业分支机构所在地址经度
+      contact:
+        type: string
+        description: 分支机构联系人
+      phone:
+        type: string
+        description: 分支机构联系电话
 
   User:
     type: object
@@ -1058,95 +1143,106 @@ definitions:
         type: string
         description: 错误的详细信息
   Scan:
-      type: 'object'
-      required:
-        - id
+    type: 'object'
+
+    allOf:
+      - $ref: "#/definitions/BaseModel"
+      - required:
         - scannerId
         - barcode
         - timestamp
-      properties:
-        id:
-          type: string
-          description: 'id'
-        scannerId:
-          type: string
-          description: '扫描者ID'
-        barcode:
-          type: string
-          description: '二维码内容'
-        longitude:
-          type: number
-          format: double
-          description: '扫描者所在位置的经度'
-        latitude:
-          type: number
-          format: double
-          description: '扫描者所在位置的纬度'
-        timestamp:
-          $ref: '#/definitions/Timestamp'
+        properties:
+          scannerId:
+            type: string
+            description: '扫描者ID'
+          barcode:
+            type: string
+            description: '二维码内容'
+          longitude:
+            type: number
+            format: double
+            description: '扫描者所在位置的经度'
+          latitude:
+            type: number
+            format: double
+            description: '扫描者所在位置的纬度'
+          timestamp:
+            $ref: '#/definitions/Timestamp'
+
   Trade:
     type: 'object'
-    required:
-      - block
-      - fromId
-      - productIds
-      - toId
-      - timestamp
-    properties:
-      id:
-        type: string
-        description: '对象id'
-        maxLength: 30
-      fromId:
-        type: string
-        description: '卖家ID'
-      from:
-        type: 'string'
-        description: '卖家'
-      to:
-        type: 'string'
-        description: '买家'
-      toId:
-        type: 'string'
-        description: '买家Id'
-      productIds:
-        type: array
-        items:
-          type: string
-        description: '交易物品ID'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
-      block:
-        $ref: '#/definitions/Block'
-      transaction:
-        $ref: '#/definitions/Transcation'
+    allOf:
+      - $ref: "#/definitions/BaseModel"
+      - required:
+        - block
+        - fromId
+        - productIds
+        - toId
+        - timestamp
+        properties:
+          fromId:
+            type: string
+            description: '卖家ID'
+          from:
+            type: 'string'
+            description: '卖家'
+          fromBranch:
+            type: string
+            description: 卖方企业的分支机构名称
+          to:
+            type: 'string'
+            description: '买家'
+          toId:
+            type: 'string'
+            description: '买家Id'
+          toBranch:
+            type: string
+            description: 买方企业分支机构名称
+          longitude:
+            type: number
+            format: double
+            description: 交易发生地点的经度
+          latitude:
+            type: number
+            format: double
+            description: 交易发生地点的纬度
+          productIds:
+            type: array
+            items:
+              type: string
+            description: '交易物品ID'
+          timestamp:
+            $ref: '#/definitions/Timestamp'
+          block:
+            $ref: '#/definitions/Block'
+          transaction:
+            $ref: '#/definitions/Transcation'
 
   Package:
     type: 'object'
-    required:
-      - packageId
-      - packageSpec
-      - modules
-      - manufacturer
-      - timestamp
-    properties:
-      packageId:
-        type: 'string'
-        description: '电池包id'
-      packageSpec:
-        type: 'string'
-        description: '电池包规格'
-      modules:
-        type: 'array'
-        items:
-          $ref: '#/definitions/Module'
-      manufacturer:
-        type: 'string'
-        description: '生产厂家'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
+    allOf:
+      - $ref: "#/definitions/BaseModel"
+      - required:
+        - packageSpec
+        - modules
+        - manufacturer
+        - timestamp
+        properties:
+          packageSpec:
+            type: 'string'
+            description: '电池包规格'
+          modules:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Module'
+          manufacturer:
+            type: 'string'
+            description: '生产厂家'
+          timestamp:
+            $ref: '#/definitions/Timestamp'
+
     example:
-      packageId: '507f191e810c19729de860ea'
+      id: '507f191e810c19729de860ea'
       packageSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
       manufacturer: 'v'
       modules: [{'moduleId': '507f191e810c19729de860ea','moduleSpec': '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}', 'manufacturer': '波士顿'},
@@ -1154,28 +1250,27 @@ definitions:
       timestamp: {'nanos': 206716775}
   Car:
     type: 'object'
-    properties:
-      carId:
-        type: 'string'
-        description: '电池模组id'
-        maxLength: 512
-      vin:
-        type: 'string'
-        description: '车架号'
-      packageId:
-        type: 'string'
-        description: '电池包id'
-        maxLength: 512
-      carSpec:
-        type: 'string'
-        description: '规格'
-      manufacturer:
-        type: 'string'
-        description: '生产厂家'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
+    allOf:
+      - $ref: "#/definitions/BaseModel"
+      - properties:
+          vin:
+            type: 'string'
+            description: '车架号'
+          packageId:
+            type: 'string'
+            description: '电池包id'
+            maxLength: 512
+          carSpec:
+            type: 'string'
+            description: '规格'
+          manufacturer:
+            type: 'string'
+            description: '生产厂家'
+          timestamp:
+            $ref: '#/definitions/Timestamp'
+
     example:
-      carId: '6e7f191e889019729de860ab'
+      id: '6e7f191e889019729de860ab'
       vin: 'WDBGP57B6PB127810'
       packageId: '507f191e810c19729de860ea'
       carSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
@@ -1274,3 +1369,19 @@ definitions:
       moduleSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
       manufacturer: '波士顿'
       timestamp: {'nanos': 206716775}
+  BaseModel:
+    type: 'object'
+    required:
+     - id
+    properties:
+      id:
+        type: string
+        description: 'object id'
+      _created:
+        type: string
+        format: 'date-time'
+        description: 'object create time'
+      _modified:
+        type: string
+        format: date-time
+        description: 'object modified time'
