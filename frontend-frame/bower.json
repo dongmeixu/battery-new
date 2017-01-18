@@ -43,12 +43,13 @@
     "angular-animate": "~1.4.8",
     "textAngular": "~1.4.6",
     "angular-xeditable": "~0.1.9"
-    },
+  },
   "overrides": {
     "bootstrap": {
       "main": [
         "dist/css/bootstrap.css",
-        "js/dropdown.js"
+        "js/dropdown.js",
+        "dist/js/bootstrap.min.js"
       ]
     },
     "slimScroll": {
