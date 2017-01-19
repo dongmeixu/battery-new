@@ -122,7 +122,7 @@
       $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
-      $scope.newSelect = encodeURI($scope.selectComp);
+      $scope.newSelect = encodeURIComponent($scope.selectComp);
       $http.get(getCertsApi+ '?filters=' + $scope.newFilters +'&params='+$scope.newParams,{params:$sope.Parameters})
       .success(function(data,status,headers){
         $scope.currentPageData = data; 

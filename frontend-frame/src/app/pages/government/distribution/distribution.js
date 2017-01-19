@@ -21,7 +21,7 @@
       $scope.selectComp = '';
       $scope.selectComp ="\'"+ $scope.filters.year + "\'"+","
                          + "'.*"+ $scope.filters.companyName + ".*'";
-      $scope.newParams = encodeURI($scope.selectComp);
+      $scope.newParams = encodeURIComponent($scope.selectComp);
       console.log($scope.newParams);
       $http.get(getCertsApi+ '?filters='+$scope.newfilters +'&params=' + $scope.newParams).success(function(data){
         $scope.distributionData = data; 
