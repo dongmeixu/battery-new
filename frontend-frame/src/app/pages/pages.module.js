@@ -8,62 +8,68 @@
   angular.module('BlurAdmin.pages', [
     'ui.router',
     'BlurAdmin.pages.government',
-    'BlurAdmin.pages.ui',
-    'BlurAdmin.pages.form',
+    // 'BlurAdmin.pages.ui',
+    // 'BlurAdmin.pages.form',
     //'BlurAdmin.pages.components',
 
-   // 'BlurAdmin.pages.gov',
+   'BlurAdmin.pages.battery',
+   'BlurAdmin.pages.enterprise',
    // 'BlurAdmin.pages.charts',
     //'BlurAdmin.pages.maps',
 
     //'BlurAdmin.pages.tables',
     // 'BlurAdmin.pages.charts',
 
-   // 'BlurAdmin.pages.profile',
+    // 'BlurAdmin.pages.profile',
    //  'BlurAdmin.pages.myNewPage',
-      'BlurAdmin.pages.submit',
+
+
+
+      // 'BlurAdmin.pages.submit',
+
      
   ])
-      .config(routeConfig);
+  .config(routeConfig);
 
   /** @ngInject */
   function routeConfig($urlRouterProvider, baSidebarServiceProvider) {
-    $urlRouterProvider.otherwise('/charts');
+    $urlRouterProvider.otherwise('/government');
 
-    baSidebarServiceProvider.addStaticItem({
-      title: 'Pages',
-      icon: 'ion-document',
-      subMenu: [{
-        title: 'Sign In',
-        fixedHref: 'auth.html',
-        blank: true
-      }, {
-        title: 'Sign Up',
-        fixedHref: 'reg.html',
-        blank: true
-      }, {
-        title: 'User Profile',
-        stateRef: 'profile'
-      }, {
-        title: '404 Page',
-        fixedHref: '404.html',
-        blank: true
-      }]
-    });
-    baSidebarServiceProvider.addStaticItem({
-      title: 'Menu Level 1',
-      icon: 'ion-ios-more',
-      subMenu: [{
-        title: 'Menu Level 1.1',
-        disabled: true
-      }, {
-        title: 'Menu Level 1.2',
-        subMenu: [{
-          title: 'Menu Level 1.2.1',
-          disabled: true
-        }]
-      }]
-    });
+  //   baSidebarServiceProvider.addStaticItem({
+  //     title: 'Pages',
+  //     icon: 'ion-document',
+  //     subMenu: [{
+  //       title: 'Sign In',
+  //       fixedHref: 'auth.html',
+  //       blank: true
+  //     }, {
+  //       title: 'Sign Up',
+  //       fixedHref: 'reg.html',
+  //       blank: true
+  //     }, {
+  //       title: 'User Profile',
+  //       stateRef: 'profile'
+  //     }, {
+  //       title: '404 Page',
+  //       fixedHref: '404.html',
+  //       blank: true
+  //     }]
+  //   });
+  //   baSidebarServiceProvider.addStaticItem({
+  //     title: 'Menu Level 1',
+  //     icon: 'ion-ios-more',
+  //     subMenu: [{
+  //       title: 'Menu Level 1.1',
+  //       disabled: true
+  //     }, {
+  //       title: 'Menu Level 1.2',
+  //       subMenu: [{
+  //         title: 'Menu Level 1.2.1',
+  //         disabled: true
+  //       }]
+  //     }]
+  //   });
   }
 
-})();
+})
+();

@@ -24,7 +24,7 @@
             ** 找到合适的icon，填入其class名称
             */
             icon: 'ion-soup-can-outline',
-            order: 150,
+            order: 100,
           },
         }).state('government.approve', {
           url: '/approve',
@@ -42,10 +42,10 @@
           sidebarMeta: {
             order: 151,
           }
-        }).state('government.view', {
-          url: '/view',
-          templateUrl: 'app/pages/government/view/view.html',
-         // controller: 'ViewCtrl',
+        }).state('government.alreadyApprove', {
+          url: '/alreadyApprove',
+          templateUrl: 'app/pages/government/alreadyApprove/alreadyApprove.html',
+          controller: 'alreadyApproveCtrl',
           title: '已审批证书查看',
           sidebarMeta: {
             order: 153,
@@ -53,7 +53,7 @@
         }).state('government.trace', {
           url: '/trace',
           templateUrl: 'app/pages/government/trace/trace.html',
-         //controller: 'TraceCtrl',
+          controller: 'TraceCtrl',
           title: '追溯查询',
           sidebarMeta: {
             order: 154,
@@ -61,7 +61,7 @@
         }).state('government.distribution', {
           url: '/distribution',
           templateUrl: 'app/pages/government/distribution/distribution.html',
-          controller: 'DistributionPageCtrl',
+          controller: 'DistributionCtrl',
           title: '密度分布',
           sidebarMeta: {
             order: 156,
@@ -72,10 +72,9 @@
           controller: 'FlowCtrl',
           title: '流向图',
           sidebarMeta: {
-            order: 156,
+            order: 158,
           },
-        })
-        ;
+        });
     $urlRouterProvider.when('/government','/government/apply');
   }
 
