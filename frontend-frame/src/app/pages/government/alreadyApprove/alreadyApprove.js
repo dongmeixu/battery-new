@@ -37,9 +37,9 @@
 
     //获取第一页的数据
     $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
-    .success(function(data,headers){
+    .success(function(data,status,headers){
       $scope.alreadyPageData =data;
-      /*$scope.rowCount = headers.X-Total-Count;*/
+        /*    $scope.rowCount = headers('X-Total-Count');*/
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
@@ -65,9 +65,9 @@
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters.offset = $scope.offset;
       $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
-    .success(function(data,headers){
+    .success(function(data,status,headers){
       $scope.alreadyPageData =data;
-      /*$scope.rowCount = headers.X-Total-Count;*/
+        /*    $scope.rowCount = headers('X-Total-Count');*/
       }).error(function(data){
         toastr.error('录入失败', '', {});
           console.log("error: ", data);
@@ -120,9 +120,9 @@
       $scope.newParams = encodeURI($scope.selectComp);
       console.log($scope.newParams);
       $http.get(getCertsApi+'?filters='+ $scope.newFilters+ '&params='+$scope.newParams,{params:$scope.Parameters})
-      .success(function(data,headers){
+      .success(function(data,status,headers){
         $scope.alreadyPageData = data; 
-        /*$scope.rowCount = headers.X-Total-Count;*/
+          /*    $scope.rowCount = headers('X-Total-Count');*/
         cutPage();
       }).error(function(){
         toastr.error('查询数据失败', '', {});

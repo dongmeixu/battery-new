@@ -39,9 +39,9 @@
     
     //api文档中还没写好，之后还需要更改
     $http.get(getTradesApi/*+'?' +'params=' + $scope.newFilters*/
-              ,{params:$scope.Parameters}).success(function(data,headers){
+              ,{params:$scope.Parameters}).success(function(data,status,headers){
       $scope.tracePageData =data;
-      //$scope.rowCount = headers.X-Total-Count;
+        /*    $scope.rowCount = headers('X-Total-Count');*/
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
@@ -68,8 +68,9 @@
       $scope.Parameters.offset = $scope.offset;
       //api文档中还没写好，之后还需要更改
       $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
-              ,{params:$scope.Parameters}).success(function(data){
+              ,{params:$scope.Parameters}).success(function(data,status,headers){
         $scope.tracePageData =data;
+          /*    $scope.rowCount = headers('X-Total-Count');*/
         toastr.success('数据获取成功', '', {
            "timeOut": "1000",
            "closeButton": false,
@@ -125,10 +126,13 @@
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'" +","
                            + "\'" + $scope.filters.startNum + "\'"+ ","+"\'" + $scope.filters.endNum + "\'";
-      $scope.newParams = encodeURI($scope.selectComp);
+      $scope.newParams = encodeURIComponent($scope.selectComp);
       console.log($scope.newParams);
-      $http.get(getTradesApi+ '?filters='+ $scope.newFilters+'&params='+$scope.newParams,{params:$scope.Parameters}).success(function(data){
+      $http.get(getTradesApi+ '?filters='+ $scope.newFilters+'&params='+$scope.newParams,{params:$scope.Parameters})
+      .success(function(data,status,headers){
         $scope.tracePageData = data; 
+          /*    $scope.rowCount = headers('X-Total-Count');*/
+          cutPage();
       }).error(function(){
         toastr.error('查询数据失败', '', {});
           console.log("error: ", data);

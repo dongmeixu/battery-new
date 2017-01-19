@@ -137,22 +137,22 @@
             {
                 "from":"比克电池",
                 "to":"奇瑞汽车",
-                "value":100
+                "count":100
             },
             {
                 "from":"比克电池",
                 "to":"福特汽车",
-                "value":90
+                "count":90
             },
             {
                 "from":"比克电池",
                 "to":"一汽",
-                "value":90
+                "count":90
             },
             {
                 "from":"比克电池",
                 "to":"宇通客车",
-                "value":90
+                "count":90
             },
         ];
 
@@ -160,12 +160,12 @@
          "companyName":""
          "year":""
          };
-         var getTradesApi="http://loaclhost:9000/v1/trades"
+         var getFlowsApi="http://loaclhost:9000/v1/flows"
          $scope.select=function(){
          $scope.selectComp="'.*" + $scope.filters.companyName + ".*'" +"," + "\'"
          + $scope.filters.year+ "\'";
          $scope.newParams=encodeURI($scope.selectComp);
-         $http.get(getTradesApi+'?'+'filters='+$scope.newUri).success(function(data){
+         $http.get(getFlowsApi+'?'+'filters='+$scope.newUri).success(function(data){
          $scope.mapData=data;
          })
          }*/
@@ -261,7 +261,7 @@
                     data: item[1].map(function (dataItem) {
                         return {
                             name: [dataItem.to],
-                            value: geoCoordMap[dataItem.to].concat([dataItem.value])
+                            value: geoCoordMap[dataItem.to].concat([dataItem.count])
                         };
                     })
                 });
