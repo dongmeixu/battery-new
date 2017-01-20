@@ -22,7 +22,7 @@ public class Users extends API {
        renderJSON(users);
     }
     public static void get(@Required String  id){
-        User user =  User.getCollection(User.class).findOne(new ObjectId(id)).as(User.class);
+        User user =  User.getCollection(User.class).findOne("{_id:#}",id).as(User.class);
         if (user == null) {
             notFound(id);
         }else {
