@@ -1,0 +1,182 @@
+<div class="widgets">
+
+  <div class="row">
+    
+    <div class="col-md-12">
+      
+      <div class="panel panel-success">
+      <br>
+<div>
+   <!-- form-horizontal -->
+   <form class="form-inline" role="form">
+      <!-- form-group -->
+      <div class="form-group" >
+      <!-- form-group --><div class=" col-sm-offset-5 col-sm-2" style="margin-left: 200px;">
+         <button  id="btnWeek" class="btn btn-primary  " style="padding: 10px 25px;" name="frequence" >生成单个二维码</button>
+      </div></div><div class="form-group " >
+         <div class=" col-sm-offset-4 col-sm-2" style="margin-left: 100px;">
+         <button id="btnMonth" style="padding: 10px 25px;" class="btn btn-primary btn-lg" type="button" name="frequence" value="">批量生成二维码</button></div>
+      
+      </div>
+      </form>
+       
+
+                <!-- 能用
+                <input id="btnShow" type="button" value="<?php echo $ini_array['module.insert'];?>" class="btn" />
+                <input id="btnHide" type="button" value="<?php echo $ini_array['module.insert'];?>" class="btn" /> 
+                -->
+                <!-- 直接使用按钮的id没有问题
+                <input id="tt" type="text" name="title" maxlength="50" size="50"></td> -->
+               
+               
+                
+               
+                <!-- 能用
+                <div id="tt1"><input type="text" name="title" maxlength="50" size="50" value="tt1"></div>
+                <div id="tt2"><input type="text" name="title" maxlength="50" size="50" value="tt2"></div> 
+                -->
+                <div id="tt1"> <div  class="row" style="margin-top: 20px;"> 
+                <div class="col-md-offset-1 " style="margin-left: 230px;">
+                    <form class="form-inline" role="form">
+   <div class="form-group">
+   
+      
+      <input style="padding: 6px 50px;" type="text" class="form-control" id="name" ng-model="singleNum"
+         placeholder="请输入流水号">
+  
+   </div>
+   <div class="form-group"><div class="col-sm-offset-4">
+   <button type="button"  id="btnWeek1"  class="btn btn-primary " name="frequence" value="" ng-click="makeUp()">生成</button></div></div>
+</form> </div></div>
+ <div class="col-sm-offset-3" style="margin-top: 20px;">
+         <img 
+         ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+          </div>
+</div>
+              
+ <div id="tt2">
+
+ <div  class="row" style="margin-top: 20px;">
+    <div class="col-sm-offset-1 col-md-6" style="margin-left: 220px;">
+        <form class="form-inline" role="form">
+   <div class="form-group">
+        请输入流水号范围：
+        <input class="form-control" style="width: 200px" type="text" value="" style="border-radius: 4px;" placeholder="起始流水号" name="">&nbsp--&nbsp<input class="form-control" style="width: 200px" style="border-radius: 4px;" type="text" value="" placeholder="终止流水号" name="">
+         </div></form></div>
+
+ <div class="col-md-1 " style="margin-left: 5px; ">
+           <button id="btnMonth1"  name="frequence"  class="btn btn-primary" 
+   data-toggle="button"> 批量生成
+</button>
+        </div>
+         </div>
+         <div id="tt3"> <div class="col-sm-offset-2">
+         <img ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+          </div>
+         </div>
+          <div id="tt4">
+           <div class="container " style="margin-left: 35px;">
+              <div class="row  templatemo_gallery_wrapper">
+                  <div class="col-sm-3"  >
+                      <div class="templatemo_gallery">
+                          <div class="gallery-item">
+              <img style="border:10px solid #F0F0F0;" ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+             
+            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"  >
+                      <div class="templatemo_gallery">
+                          <div class="gallery-item">
+              <img style="border:10px solid #E8E8E8;" ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+              
+            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"  >
+                      <div class="templatemo_gallery">
+                          <div class="gallery-item">
+              <img style="border:10px solid #E8E8E8;" ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+             
+            </div>
+                        </div>
+                    </div></div>
+                    <div class="row gradient templatemo_gallery_wrapper">
+                    <div class="col-sm-3">
+                      <div class="templatemo_gallery">
+                          <div class="gallery-item"  >
+              <img style="border:10px solid #E8E8E8;" ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+             
+            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="templatemo_gallery">
+                          <div class="gallery-item"  >
+              <img style="border:10px solid #E8E8E8;" ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+             
+            </div>
+                        </div>
+                    </div>
+                    <div  class="col-sm-3">
+                      <div class="templatemo_gallery"  >
+                          <div class="gallery-item" >
+              <img style="border:10px solid #E8E8E8;" ng-src="assets/img/app/profile/1.jpg" src="assets/img/app/profile/1.jpg">
+             
+            </div>
+                        </div>
+                    </div>
+                    
+                   
+                  
+                    
+              </div>
+            </div>
+          
+         </div>
+ 
+               
+    <!-- 绑定事件似乎要写在被绑定对象的后面 -->
+    <script type="text/javascript" >
+       $("#tt1").hide(); $("#tt2").hide(); 
+       $("#tt3").hide(); $("#tt4").hide();
+/*     function single(){
+       alert("dddd");
+       $("#tt4").show();
+     }*/
+
+        $("#btnWeek").bind("click", function(event) { $("#tt1").show();$("#tt2").hide();$("#tt3").hide();$("#tt4").hide();});
+        $("#btnWeek1").bind("click", function(event) {$("#tt3").show();});
+        $("#btnMonth").bind("click", function(event) {$("#tt2").show();$("#tt1").hide();$("#tt3").hide();$("#tt4").hide();  });
+       // $("#btnWeek1").bind("click", function(event) {$("#tt1").hide(); $("#tt2").show(); $("#tt3").hide(); });
+        $("#btnMonth1").bind("click", function(event) { $("#tt1").hide(); $("#tt2").show(); $("#tt3").hide(); $("#tt4").show(); });
+ /*    $("#btnWeek1").bind("click", function(event) { $("#tt3").show(); $("#tt4").hide(); });
+        $("#btnOne").bind("click", function(event) { $("#tt1").hide(); $("#tt2").hide(); });
+        $("#btnDay").bind("click", function(event) { $("#tt1").hide(); $("#tt2").hide(); });
+ */  /*     $("#btnWeek").bind("click", function(event) { $("#tt1").show(); $("#tt2").hide(); });
+        $("#btnMonth").bind("click", function(event) { $("#tt1").hide(); $("#tt2").show(); });
+*/
+    </script>
+<!-- <script type="text/javascript" >
+        $("#btnOne1").bind("click", function(event) { $("#tt3").hide(); $("#tt4").hide(); });
+        $("#btnDay1").bind("click", function(event) { $("#tt3").hide(); $("#tt4").hide(); });
+        $("#btnWeek1").bind("click", function(event) { $("#tt3").show(); $("#tt4").hide(); });
+        $("#btnMonth1").bind("click", function(event) { $("#tt3").hide(); $("#tt4").show(); });
+
+    </script> -->
+
+
+      <!-- form-group -->
+     
+   
+
+
+
+</div>
+
+</div>
+<br>
+    </div>
+  </div>
+
+</div>
