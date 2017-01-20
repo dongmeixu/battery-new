@@ -36,7 +36,10 @@ import java.util.Objects;
 public class Token  implements Jsonable {
   @Required
   private String token = null;
-
+  /**
+   * token type, default: JWT
+   */
+  String type="JWT";
   @Required
   private String userName = null;
 
@@ -76,6 +79,13 @@ public class Token  implements Jsonable {
     this.userName = userName;
   }
 
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
 
   @Override
   public boolean equals(Object o) {
