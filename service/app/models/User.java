@@ -18,7 +18,7 @@ public class User extends BaseModel implements Jsonable {
     @JSONField(serialize = false)
     @Required
     public String password;
-    public Date createDate;
+
     public Integer state;
 
     public String getUserName() {
@@ -37,13 +37,7 @@ public class User extends BaseModel implements Jsonable {
         this.password = password;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
 
     public Integer getState() {
         return state;

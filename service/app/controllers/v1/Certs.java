@@ -4,8 +4,8 @@ import com.google.common.base.Strings;
 import controllers.api.API;
 import edu.ustb.security.domain.vo.ecc.Pair;
 import edu.ustb.security.service.ecc.impl.CpkCoresImpl;
-import edu.ustb.security.domain.vo.ecc.Pair;
-import models.Cert;
+
+import models.Company;
 import models.Module;
 import org.apache.commons.lang.StringUtils;
 
@@ -59,9 +59,9 @@ public class Certs extends API {
      * 1.政府内部用户-离线信息录入（申请证书）
      */
     public static void apply() {
-        Cert cert = readBody(Cert.class);
-        cert.save();
-        created(cert);
+        Company company = readBody(Company.class);
+        company.save();
+        created(company);
     }
 
     /**
@@ -84,11 +84,11 @@ public class Certs extends API {
         Date endDate =  sdf.parse(params.get(2));
         Long status = Long.valueOf(params.get(3));
 
-        MongoCursor<Cert> mongoCursor = getCollection(Cert.class).find(filters,companyName,startDate,endDate,status).limit(limit).skip(offset).as(Cert.class);
+        MongoCursor<Company> mongoCursor = getCollection(Company.class).find(filters,companyName,startDate,endDate,status).limit(limit).skip(offset).as(Company.class);
         response.setHeader("X-Total-Count",String.valueOf(mongoCursor.count()));
 
-        List<Cert> certs = StreamSupport.stream(mongoCursor.spliterator(),false).collect(Collectors.toList());
-        renderJSON(certs);
+        List<Company> companies = StreamSupport.stream(mongoCursor.spliterator(),false).collect(Collectors.toList());
+        renderJSON(companies);
     }
 
     /**
@@ -103,7 +103,7 @@ public class Certs extends API {
 
         //todo: 证书审批后,需要生成证书(zip压缩包格式)文件并保存
         for(String id : idArr) {
-            getCollection(Cert.class).update(new ObjectId(id)).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
+            getCollection(Company.class).update(new ObjectId(id)).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
             /**
              * @Description
              *  1.调用接口生成 tradeSk,productSK,Matrix
@@ -171,11 +171,11 @@ public class Certs extends API {
      * @param companyId 企业的Id
      */
     public static void get(@Required String companyId) {
-        Cert cert =  getCollection(Cert.class).findOne("{companyId:#}",companyId).as(Cert.class);
-        if (cert == null) {
+        Company company =  getCollection(Company.class).findOne("{companyId:#}",companyId).as(Company.class);
+        if (company == null) {
             notFound(companyId);
         }else {
-            renderJSON(cert);
+            renderJSON(company);
         }
     }
 
@@ -186,9 +186,9 @@ public class Certs extends API {
      */
     public static void certsImport(@Required Integer companyId,@Required File attachment) throws IOException {
         String remark = request.params.get("remark");
-        Cert cert =  getCollection(Cert.class).findOne("{companyId:#}",companyId).as(Cert.class);
-        cert.certRemark = remark;
-        cert.save();
+        Company company =  getCollection(Company.class).findOne("{companyId:#}",companyId).as(Company.class);
+        company.certRemark = remark;
+        company.save();
         String storePath = certFilesPath + File.separator + companyId + File.separator + UUID.randomUUID();
         File storeFile = new File(storePath);
         Files.copy(attachment, storeFile);
@@ -245,9 +245,9 @@ public class Certs extends API {
      * @param id 证书id
      */
     public static void download(@Required String id) {
-        Cert cert = getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
-        notFoundIfNull(cert);
-        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+cert.getCompanyName()).content()),cert.getCompanyName()+".zip");
+        Company company = getCollection(Company.class).findOne(new ObjectId(id)).as(Company.class);
+        notFoundIfNull(company);
+        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+ company.getCompanyName()).content()), company.getCompanyName()+".zip");
     }
 
     /**
