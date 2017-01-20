@@ -25,6 +25,7 @@
 
 package models;
 
+import models.api.BlockchainAware;
 import models.api.Jsonable;
 import play.data.validation.Required;
 import play.modules.jongo.BaseModel;
@@ -37,7 +38,7 @@ import java.util.Objects;
 /**
  * Trade
  */
-public class Trade extends BaseModel implements Jsonable {
+public class Trade extends BaseModel implements Jsonable ,BlockchainAware {
   @Required
   private String id = null;
 
@@ -98,15 +99,6 @@ public class Trade extends BaseModel implements Jsonable {
     return this;
   }
 
-  /**
-   * 对象id
-   * @return id
-   **/
-/*
-  public String getId() {
-    return id;
-  }
-*/
 
   public void setId(String id) {
     this.id = id;

@@ -95,13 +95,12 @@ public class Auth implements Jsonable{
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class Auth {\n");
-    
-    sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("}");
-    return sb.toString();
+    String sb = "class Auth {\n" +
+            "    userName: " + toIndentedString(userName) + "\n" +
+            "    password: " + toIndentedString(password) + "\n" +
+            "}";
+
+    return sb;
   }
 
   /**

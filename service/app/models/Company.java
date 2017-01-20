@@ -1,6 +1,7 @@
 package models;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import models.api.BlockchainAware;
 import models.api.Jsonable;
 import play.data.validation.Required;
 import play.modules.jongo.BaseModel;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by xudongmei on 2016/12/13.
  */
 
-public class Company extends BaseModel implements Jsonable {
+public class Company extends BaseModel implements Jsonable,BlockchainAware {
     @Required
     public String companyId;
     /**
@@ -63,7 +64,7 @@ public class Company extends BaseModel implements Jsonable {
 
     List<Branch> branches = new ArrayList<>();
     /**
-     * 申请证书的状态
+     * 申请证书的状态c
      * 0：未审核 1：审核通过 2：审核不通过
      */
     @Required
