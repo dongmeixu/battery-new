@@ -9,9 +9,9 @@
         <div class="col-md-5">
           <form class="form-inline" role="form">
             <div class="form-group">
-              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="起止时间" name="" ng-model="filters.startDate">
+              <input class="form-control" style="width: 180px" type="date" style="border-radius: 4px;" placeholder="起止时间" name="" ng-model="filters.startDate">
               <span>&nbsp--&nbsp</span>
-              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filters.endDate">
+              <input class="form-control" style="width: 180px" type="date" style="border-radius: 4px;"  placeholder="截止时间" name="" ng-model="filters.endDate">
             </div>
           </form>
         </div>
@@ -33,11 +33,6 @@
 
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
-      <style>
-      #demo{overflow:hidden;width:120px;text-align:center;padding:10px;}
-      #demo img{border:none;width:30px;height:30px;border:5px solid #f4f4f4}
-      #enlarge_images{position:absolute;display:none;z-index:2;border:5px solid #f4f4f4}
-      </style>
       <tr class="sortable ">
         <th st-sort="firstName">申请日期</th>
         <th st-sort="lastName">申请序号</th>
@@ -62,9 +57,9 @@
         <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
         <td>
         <div id="demo" style="overflow:hidden;width:120px;text-align:center;padding:10px">
-        <img id="img" onmousemove="bigger(this)" onmouseout="smaller(this)" onclick="openImg(this)" src="http://www.51xuediannao.com/uploads/soft/texiao/img2img/img2img.jpg"   />
+        <img id="img" onmousemove="bigger(this)" onmouseout="smaller(this)" onclick="openImg(this)" style="border:none;width:30px;height:30px;" src="{{item.licensePicture}}"/>
         </div>
-        <div id="enlarge_images"></div> 
+        <div id="enlarge_images" style="position:absolute;display:none;z-index:2;"></div>
         </td>
       </tr>
     </tbody>
@@ -113,8 +108,8 @@
   event = event || window.event;
     ei.style.display = "block";
     ei.innerHTML = '<img src="' + img.src + '" />';
-    ei.style.top  = document.body.scrollTop + event.clientY - 200 + "px";
-    ei.style.left = document.body.scrollLeft + event.clientX - 600 + "px";
+    ei.style.top  = document.body.scrollTop + event.clientY - 100 + "px";
+    ei.style.left = document.body.scrollLeft + event.clientX - 300 + "px";
  }
  
  function smaller(img){

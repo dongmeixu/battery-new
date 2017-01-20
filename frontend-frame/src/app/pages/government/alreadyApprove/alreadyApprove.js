@@ -36,16 +36,16 @@
     $scope.newParame = encodeURI($scope.newParameters);
 
     //获取第一页的数据
-    console.log($scope.newUri);
     $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
-    .success(function(data,headers){
+    .success(function(data,status,headers){
       $scope.alreadyPageData =data;
-      $scope.rowCount = headers;
+        /*    $scope.rowCount = headers('X-Total-Count');*/
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
     }).error(function(data){
-      alert("选择失败");
+      toastr.error('获取数据失败', '', {});
+          console.log("error: ", data);
     });
 
     //分页
@@ -65,11 +65,12 @@
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters.offset = $scope.offset;
       $http.get(getCertsApi+'?filters='+ $scope.newFilters +'&params=' + $scope.newParame,{params:$scope.Parameters})
-    .success(function(data,headers){
+    .success(function(data,status,headers){
       $scope.alreadyPageData =data;
-      $scope.rowCount = headers;
+        /*    $scope.rowCount = headers('X-Total-Count');*/
       }).error(function(data){
-        alert("选择失败");
+        toastr.error('录入失败', '', {});
+          console.log("error: ", data);
       });
     },
 
@@ -116,13 +117,16 @@
       $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
-      $scope.newParams = encodeURI($scope.selectComp);
+      $scope.newParams = encodeURIComponent($scope.selectComp);
       console.log($scope.newParams);
       $http.get(getCertsApi+'?filters='+ $scope.newFilters+ '&params='+$scope.newParams,{params:$scope.Parameters})
-      .success(function(data,headers){
+      .success(function(data,status,headers){
         $scope.alreadyPageData = data; 
-        $scope.rowCount = headers;
+          /*    $scope.rowCount = headers('X-Total-Count');*/
         cutPage();
+      }).error(function(){
+        toastr.error('查询数据失败', '', {});
+          console.log("error: ", data);
       });
     };
 

@@ -11,7 +11,7 @@
     $scope.approveList = [];
     /*$scope.newUri = '';*/
     $scope.idList = [];
-    /*$scope.itemList = [];*/
+    $scope.itemList = [];
     $scope.array = [];
     $scope.limit = 5;
     $scope.offset = 0;
@@ -34,19 +34,20 @@
       "offset": $scope.offset
     };
     //设置查询条件的参数值并encode
-    $scope.newParameters = "\' \'"+"\' \'"+ "\' \'"+ 0;
+    $scope.newParameters = "\'\'"+ "," + "\'\'"+ "," + "\'\'"+ ","+0;
     $scope.newParame = encodeURI($scope.newParameters);
 
     //获取第一页的数据
     $http.get(getCertsApi+'?filters=' + $scope.newFilters +'&params=' + $scope.newParame
-              ,{params:$scope.Parameters}).success(function(data,headers){
+              ,{params:$scope.Parameters}).success(function(data, status, headers, config){
       $scope.currentPageData =data;
-      $scope.rowCount = headers;
+  /*    $scope.rowCount = headers('X-Total-Count');*/
       $scope.pageSize = 5;
       $scope.selPage = 1;
       $scope.cutPage(); 
     }).error(function(data){
-      alert("选择失败");
+      toastr.error('获取数据失败', '', {});
+          console.log("error: ", data);
     });
 
     //分页
@@ -68,11 +69,12 @@
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters.offset = $scope.offset;
       $http.get(getCertsApi+'?filters=' + $scope.newFilters +'&params=' + $scope.newParame
-              ,{params:$scope.Parameters}).success(function(data,headers){
+              ,{params:$scope.Parameters}).success(function(data,status,headers){
       $scope.currentPageData =data;
-      $scope.rowCount = headers;
+  /*    $scope.rowCount = headers('X-Total-Count');*/
       }).error(function(data){
-        alert("选择失败");
+        toastr.error('获取数据失败', '', {});
+          console.log("error: ", data);
       });
     },
 
@@ -120,12 +122,15 @@
       $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
-      $scope.newSelect = encodeURI($scope.selectComp);
+      $scope.newSelect = encodeURIComponent($scope.selectComp);
       $http.get(getCertsApi+ '?filters=' + $scope.newFilters +'&params='+$scope.newParams,{params:$sope.Parameters})
-      .success(function(data,headers){
+      .success(function(data,status,headers){
         $scope.currentPageData = data; 
-        $scope.rowCount = headers;
+        /*    $scope.rowCount = headers('X-Total-Count');*/
         $scope.cutPage();
+      }).error(function(){
+         toastr.error('查询数据失败', '', {});
+          console.log("error: ", data);
       });
     },
 
@@ -139,10 +144,12 @@
         angular.forEach($scope.currentPageData,function(item){
           if(item.checked == true){
             $scope.idList.push(item.id); 
+            item.status = 1;
+            item.checked = true;
+            $scope.itemList.push(item);
           }
         })
-        $http.put(putCertsApi + '/' + $scope.idList + '?status=1').success(function(data,headers){
-          $scope.rowCount = headers;
+        $http.put(putCertsApi + '/' + $scope.idList + '?status=1', ''/*$scope.itemList[0]*/).success(function(data){
           $scope.setData();
           $scope.cutPage();
           toastr.success('录入成功', '', {
@@ -168,8 +175,7 @@
             $scope.idList.push(item.id); 
           }
         })
-        $http.put(putCertsApi + '/' + $scope.idList + '?status=2').success(function(data,headers){
-          $scope.rowCount = headers;
+        $http.put(putCertsApi + '/' + $scope.idList + '?status=2').success(function(data){
           $scope.setData();
           $scope.cutPage();
           toastr.success('录入成功', '', {
