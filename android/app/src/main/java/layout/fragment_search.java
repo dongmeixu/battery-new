@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.novadata.batteryapp.MainActivity;
 import com.novadata.batteryapp.R;
 import com.novadata.batteryapp.ScanActivity;
+import com.novadata.batteryapp.SearchResultActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +127,13 @@ public class fragment_search extends Fragment implements View.OnClickListener {
 
                         //根据关键词去搜索
 
+                        //TODO 跳转到搜索结果页面
+                        Intent intent = new Intent(MainActivity.mainActivity, SearchResultActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("battery_code", searchContentEt.getText().toString());
+                        intent.putExtras(bundle);
+                        startActivityForResult(intent, 2);
+
                     } else {
                         Toast.makeText(getActivity(), "搜索内容不能为空", Toast.LENGTH_SHORT).show();
                     }
@@ -207,8 +215,6 @@ public class fragment_search extends Fragment implements View.OnClickListener {
             Bundle bundle=data.getExtras();
             String result= bundle.getString("result");
             searchContentEt.setText(result);
-        } if(resultCode == getActivity().RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "相机打开出错，扫描取消", Toast.LENGTH_SHORT).show();
         }
     }
 

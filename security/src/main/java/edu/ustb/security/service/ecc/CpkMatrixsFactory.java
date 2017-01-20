@@ -6,8 +6,7 @@ import edu.ustb.security.domain.vo.ecc.Key;
 import edu.ustb.security.domain.vo.ecc.elliptic.EllipticCurve;
 import edu.ustb.security.domain.vo.ecc.elliptic.InsecureCurveException;
 import edu.ustb.security.domain.vo.ecc.elliptic.secp256r1;
-import edu.ustb.security.domain.vo.matrix.Matrix;
-import edu.ustb.security.domain.vo.matrix.Matrixs;
+import edu.ustb.security.domain.vo.matrix.*;
 
 import java.math.BigInteger;
 
@@ -21,7 +20,7 @@ public class CpkMatrixsFactory {
      *
      * @return 种子矩阵对象
      */
-    public static Matrixs generateCpkMatrix() {
+    public static CpkMatrix generateCpkMatrix() {
         EllipticCurve ellipticCurve = null;
         try {
             ellipticCurve = new EllipticCurve(new secp256r1());
@@ -37,24 +36,29 @@ public class CpkMatrixsFactory {
      * @param ellipticCurve 指定曲线
      * @return 种子矩阵对象
      */
-    public static Matrixs generateCpkMatrix(EllipticCurve ellipticCurve) {
+    public static CpkMatrix generateCpkMatrix(EllipticCurve ellipticCurve) {
         if (ellipticCurve != null) {
-            Matrixs matrixs = new Matrixs();
-            Matrix[] matrices = new Matrix[1024];
+            CpkMatrix cpkMatrix = new CpkMatrix();
+            PubPoint[] pubPoints = new PubPoint[1024];
+            SecPoint[] secPoints = new SecPoint[1024];
             int k = 0;
             for (int i = 0; i < 32; i++) {
                 for (int j = 0; j < 32; j++) {
                     Key key = new ECKey(ellipticCurve);
                     BigInteger sk = key.getSk();
                     ECPoint pk = key.getPk();
-                    Matrix matrix = new Matrix(i, j, pk.getx().toString(32), pk.gety().toString(32), sk.toString(32));
-                    matrices[k] = matrix;
+                    pubPoints[k] = new PubPoint(i, j, pk.getx().toString(32), pk.gety().toString(32));
+                    secPoints[k] = new SecPoint(i, j, sk.toString(32));
                     k++;
                 }
             }
-            matrixs.setMatrices(matrices);
-            return matrixs;
+            cpkMatrix.setPubPoints(pubPoints);
+            cpkMatrix.setSecPoints(secPoints);
+            return cpkMatrix;
         }
         return null;
     }
+
+
+
 }

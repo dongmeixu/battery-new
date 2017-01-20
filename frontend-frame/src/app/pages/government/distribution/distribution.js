@@ -6,7 +6,8 @@
 
   /** @ngInject */
   function DistributionCtrl($scope, $http, toastr, $filter) {
-    var getDensitysApi = "http://localhost:3003/densitys"
+    var getDensitysApi = "http://localhost:3003/densitys";
+    $scope.distributionData = [];
     $scope.filters={
         "year": "",
         "companyName": ""
@@ -20,7 +21,7 @@
       $scope.selectComp = '';
       $scope.selectComp ="\'"+ $scope.filters.year + "\'"+","
                          + "'.*"+ $scope.filters.companyName + ".*'";
-      $scope.newParams = encodeURI($scope.selectComp);
+      $scope.newParams = encodeURIComponent($scope.selectComp);
       console.log($scope.newParams);
       $http.get(getCertsApi+ '?filters='+$scope.newfilters +'&params=' + $scope.newParams).success(function(data){
         $scope.distributionData = data; 
@@ -101,7 +102,8 @@ $scope.mapOption = {
                     show: true
                 }
             },
-            data:[
+            data://$scope.distributionData
+            [
                 {name: '北京',value: $scope.randomData() },
                 {name: '天津',value: $scope.randomData() },
                 {name: '上海',value: $scope.randomData() },
