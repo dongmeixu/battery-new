@@ -13,8 +13,7 @@ import edu.ustb.security.domain.vo.ecc.ECPoint;
 import edu.ustb.security.domain.vo.ecc.Key;
 import edu.ustb.security.domain.vo.ecc.Pair;
 import edu.ustb.security.domain.vo.ecc.elliptic.*;
-import edu.ustb.security.domain.vo.matrix.Matrix;
-import edu.ustb.security.domain.vo.matrix.Matrixs;
+import edu.ustb.security.domain.vo.matrix.*;
 import edu.ustb.security.service.ecc.CpkCores;
 
 import java.io.IOException;
@@ -32,7 +31,8 @@ public class CpkCoresImpl implements CpkCores {
     private BigInteger[][] skm = new BigInteger[32][32];
     private ECPoint[][] pkm = new ECPoint[32][32];
 
-    public CpkCoresImpl(Matrixs matrixs) {
+
+    public CpkCoresImpl(CpkMatrix cpkMatrix) {
         try {
             defaultEllipticCurve = new EllipticCurve(new secp256r1());
         } catch (InsecureCurveException e) {
@@ -40,16 +40,29 @@ public class CpkCoresImpl implements CpkCores {
             defaultEllipticCurve = null;
         }
         int k = 0;
-        Matrix[] matrices = matrixs.getMatrices();
-        for (int i = 0; i < 32; i++) {
-            for (int j = 0; j < 32; j++) {
-                skm[i][j] = new BigInteger(matrices[k].getPrivateKey(), 32);
-                try {
-                    pkm[i][j] = new ECPoint(defaultEllipticCurve, new BigInteger(matrices[k].getPublicKeyX(), 32), new BigInteger(matrices[k].getPublicKeyY(), 32));
-                } catch (NotOnMotherException e) {
-                    e.printStackTrace();
+        PubPoint[] pubPoints = cpkMatrix.getPubPoints();
+        SecPoint[] secPoints = cpkMatrix.getSecPoints();
+
+
+        if (cpkMatrix.getPubPoints() != null) {
+            for (int i = 0; i < 32; i++) {
+                for (int j = 0; j < 32; j++) {
+                    try {
+                        pkm[i][j] = new ECPoint(defaultEllipticCurve, new BigInteger(pubPoints[k].getPublicKeyX(), 32), new BigInteger(pubPoints[k].getPublicKeyY(), 32));
+                    } catch (NotOnMotherException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
+        }
+        if (cpkMatrix.getSecPoints() != null) {
+            for (int i = 0; i < 32; i++) {
+                for (int j = 0; j < 32; j++) {
+                    skm[i][j] = new BigInteger(secPoints[k].getPrivateKey(), 32);
+                }
+            }
+
         }
 
     }
