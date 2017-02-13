@@ -25,6 +25,7 @@
 
 package models;
 
+import models.api.BlockchainAware;
 import models.api.Jsonable;
 import play.data.validation.Required;
 import play.modules.jongo.BaseModel;
@@ -37,7 +38,7 @@ import java.util.Objects;
 /**
  * Package
  */
-public class Package extends BaseModel implements Jsonable {
+public class Package extends BaseModel implements Jsonable,BlockchainAware {
   @Required()
   private String packageId = null;
 

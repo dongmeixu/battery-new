@@ -16,7 +16,7 @@ public class Timestamp implements Jsonable{
         nanos =now.getNano();
 
     }
-    public static final Timestamp now(){
+    public static Timestamp now(){
         return new Timestamp();
     }
     public Timestamp(long seconds, int nanos) {

@@ -5,7 +5,8 @@ import edu.ustb.security.domain.vo.ecc.ECPoint;
 import edu.ustb.security.domain.vo.ecc.Pair;
 import edu.ustb.security.domain.vo.ecc.elliptic.EllipticCurve;
 import edu.ustb.security.domain.vo.ecc.elliptic.secp256r1;
-import edu.ustb.security.domain.vo.matrix.Matrixs;
+import edu.ustb.security.domain.vo.matrix.CpkMatrix;
+import edu.ustb.security.service.ecc.CpkCores;
 import edu.ustb.security.service.ecc.CpkMatrixsFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,8 +28,8 @@ import static org.junit.Assert.*;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CpkCoresImplTest {
+    private CpkMatrix cpkMatrix;
     private CpkCoresImpl cpkCores;
-    private EllipticCurve ellipticCurve;
     private BigInteger skm[][] = new BigInteger[32][32];
     private ECPoint pkm[][] = new ECPoint[32][32];
     private String id = "sunyichao";
@@ -41,13 +42,30 @@ public class CpkCoresImplTest {
     @Before
     public void setUp() throws Exception {
         //生成种子矩阵
-        Matrixs matrixs = CpkMatrixsFactory.generateCpkMatrix();
-//        Matrixs matrixs1 = Matrixs.fromJson(matrixs.toJson());
+        cpkMatrix = CpkMatrixsFactory.generateCpkMatrix();
         //实例化cpkCores核心类
-        cpkCores = new CpkCoresImpl(matrixs);
+        cpkCores = new CpkCoresImpl(cpkMatrix);
 
     }
 
+    /**
+     * CpkMatrix 序列化相关测试：
+     */
+    @Test
+    public void AjsonTest() {
+        // 种子矩阵序列化为仅包含公钥种子矩阵的JSON字符串
+        String s = cpkMatrix.toPubJson();
+        // 反序列化得到仅包含种子公钥的种子公钥
+        CpkMatrix cpkMatrix = CpkMatrix.fromJson(s);
+        // 通过种子公钥得到CpkCores 算法核心类
+        CpkCores cpkCores = new CpkCoresImpl(cpkMatrix);
+        // 种子矩阵序列化为仅包含私钥种子矩阵的JSON字符串
+        String s1 = cpkMatrix.toSecJson();
+        //  反序列化得到仅包含种子私钥的种子私钥
+        CpkMatrix cpkMatrix1 = CpkMatrix.fromJson(s1);
+        // 通过种子公钥得到CpkCores 算法核心类
+        CpkCores cpkCores1 = new CpkCoresImpl(cpkMatrix1);
+    }
 
     @Test
     public void BGenerateSk() {
