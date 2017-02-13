@@ -8,8 +8,8 @@ import java.time.Instant;
  * Created by zhaoxy on 15/01/2017.
  */
 public class Timestamp implements Jsonable{
-    public long seconds;
-    public int nanos;
+    private long seconds;
+    private int nanos;
     public Timestamp(){
         Instant now = Instant.now();
         seconds= now.getEpochSecond();

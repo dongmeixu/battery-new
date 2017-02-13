@@ -15,51 +15,51 @@ import java.util.List;
 
 public class Company extends BaseModel implements Jsonable {
     @Required
-    public String companyId;
+    private String companyId;
     /**
      * 企业类型 0：电池厂 1：汽车厂 2:4S店
       */
     @Required
-    public Integer companyType;
+    private Integer companyType;
 
     @Required
-    public String companyName;
+    private String companyName;
     /**
      * 企业所在省份
      */
-    public String province;
+    private String province;
     /**
      * 企业所在城市
      */
-    public String city;
+    private String city;
     /**
      * 企业所在地址
      */
-    String dom;
-    double longitude;
-    double latitude;
+    private String dom;
+    private double longitude;
+    private double latitude;
     /**
      * 社会信用码,也作为登录系统的账户名
      */
     @Required
-    public String creditCode;
+    private String creditCode;
     /**
      * 厂商代码（汽车厂不需要填写）
      */
     @Required
-    public String vendorCode;
+    private String vendorCode;
 
-    public String contact;
-
-    @Required
-    public String phone;
+    private String contact;
 
     @Required
-    public String email;
+    private String phone;
+
+    @Required
+    private String email;
     /**
      * 营业执照证书图片的Base64格式
      */
-    public String  licensePicture;
+    private String licensePicture;
 
     List<Branch> branches = new ArrayList<>();
     /**
@@ -67,23 +67,30 @@ public class Company extends BaseModel implements Jsonable {
      * 0：未审核 1：审核通过 2：审核不通过
      */
     @Required
-    public Integer status = 0;
+    private Integer status = 0;
     /**
      * 登录认证中心系统用的密码
      */
     @JSONField(serialize = false)
-    public String password;
+    private String password;
     /**
      * 交易用私钥证书
      */
-    public String tradeSK;
+    private String tradeSK;
     /**
      * 产品二维码用私钥证书
      */
-    public String productSK;
+    private String productSK;
 
+    private String certRemark;
 
-    public String certRemark;
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
     public Integer getCompanyType() {
         return companyType;
@@ -101,12 +108,44 @@ public class Company extends BaseModel implements Jsonable {
         this.companyName = companyName;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public String getProvince() {
+        return province;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDom() {
+        return dom;
+    }
+
+    public void setDom(String dom) {
+        this.dom = dom;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public String getCreditCode() {
@@ -157,6 +196,14 @@ public class Company extends BaseModel implements Jsonable {
         this.licensePicture = licensePicture;
     }
 
+    public List<Branch> getBranches() {
+        return branches;
+    }
+
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -165,14 +212,12 @@ public class Company extends BaseModel implements Jsonable {
         this.status = status;
     }
 
-
-
-    public String getCertRemark() {
-        return certRemark;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCertRemark(String certRemark) {
-        this.certRemark = certRemark;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getTradeSK() {
@@ -191,43 +236,11 @@ public class Company extends BaseModel implements Jsonable {
         this.productSK = productSK;
     }
 
-    public String getProvince() {
-        return province;
+    public String getCertRemark() {
+        return certRemark;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getDom() {
-        return dom;
-    }
-
-    public void setDom(String dom) {
-        this.dom = dom;
-    }
-
-    public List<Branch> getBranches() {
-        return branches;
-    }
-
-    public void setBranches(List<Branch> branches) {
-        this.branches = branches;
+    public void setCertRemark(String certRemark) {
+        this.certRemark = certRemark;
     }
 }

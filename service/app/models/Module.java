@@ -27,6 +27,7 @@ package models;
 
 import models.api.Jsonable;
 import play.data.validation.Required;
+import play.modules.jongo.BaseModel;
 
 
 import java.util.Objects;
@@ -34,7 +35,7 @@ import java.util.Objects;
 /**
  * Module
  */
-public class Module  implements Jsonable {
+public class Module extends BaseModel implements Jsonable {
   @Required
   private String moduleId = null;
 
@@ -43,6 +44,8 @@ public class Module  implements Jsonable {
 
   @Required
   private String manufacturer = null;
+
+  private String qr = null;
 
   @Required
   private Timestamp timestamp = Timestamp.now();
@@ -119,6 +122,13 @@ public class Module  implements Jsonable {
     this.timestamp = timestamp;
   }
 
+  public String getQr() {
+    return qr;
+  }
+
+  public void setQr(String qr) {
+    this.qr = qr;
+  }
 
   @Override
   public boolean equals(Object o) {
