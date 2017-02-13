@@ -39,9 +39,9 @@ GET          /v1/flows                            v1.Trades.flowAnalysis
 GET          /v1/densitys                         v1.Trades.densityAnalysis
 
 #生成单个二维码
-POST         /v1/2dcodes/{moduleId}               v1.Codes.singleCode
+POST         /v1/2dcodes/{moduleId}               v1.Certs.singleCode
 #生成多个二维码
-POST         /v1/2dcodes                          v1.Codes.batchCode
+POST         /v1/2dcodes                          v1.Certs.batchCode
 
 #新增交易信息
 POST         /v1/trades                           v1.Trades.save
