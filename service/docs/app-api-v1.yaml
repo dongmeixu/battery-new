@@ -343,6 +343,57 @@ paths:
           description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
+  /packages/attachments:
+    post:
+      tags:
+      - '基础信息'
+      summary: '包与模组、汽车与包对应关系文件上传-excel'
+      description: '包与模组、汽车与包对应关系文件上传-excel'
+      consumes:
+      - 'application/json'
+      parameters:
+      - name: attachment
+        in: formData
+        description: '包与模组、汽车与包对应关系文件上传-excel'
+        required: true
+        type: file
+      - name: companyType
+        in: query
+        description: 企业类型：0:电池厂 1:汽车厂 2:4s店
+        required: true
+        type: integer
+        enum:
+        - 0
+        - 1
+        - 2
+      responses:
+        201:
+          description: '成功,其URI 已经随Location 头信息返回'
+          headers:
+            Location:
+              type: string
+              description: 新创建的此扫描记录对应的资源URI
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+
   /cars:
     post:
       tags:
@@ -573,7 +624,7 @@ paths:
       summary:  证书下载
       description: 证书下载
       consumes:
-         - application/json
+         - application/file
       parameters:
         - in: path
           name: ids
@@ -1270,7 +1321,7 @@ definitions:
             $ref: '#/definitions/Timestamp'
 
     example:
-      id: '6e7f191e889019729de860ab'
+      carId: '6e7f191e889019729de860ab'
       vin: 'WDBGP57B6PB127810'
       packageId: '507f191e810c19729de860ea'
       carSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'

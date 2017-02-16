@@ -30,6 +30,8 @@ GET          /v1/company/{companyId}/certs        v1.Certs.get
 POST         /v1/company/{companyId}/certs        v1.Certs.certsImport
 #附件上传
 POST         /v1/attachments                      v1.Certs.attachment
+#包与模组、汽车与包对应关系文件上传-excel
+POST         /v1/packages/attachments             v1.Trades.importExcel
 #证书下载
 GET         /v1/certs/{ids}                       v1.Certs.download
 
