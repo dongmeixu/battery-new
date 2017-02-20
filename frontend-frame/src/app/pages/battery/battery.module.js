@@ -29,7 +29,7 @@
         }).state('battery.import', {
           url: '/import',
           templateUrl: 'app/pages/battery/import/import.html',
-          controller: 'importCtrl',
+          controller: 'ImportCtrl',
           title: '证书导入',
           sidebarMeta: {
             order: 151,
@@ -37,7 +37,7 @@
         }).state('battery.submit', {
           url: '/submit',
           templateUrl: 'app/pages/battery/submit/submit.html',
-          controller: 'submitCtrl',
+          controller: 'SubmitCtrl',
           title: '信息上报',
           sidebarMeta: {
             order: 159,
