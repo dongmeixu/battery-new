@@ -13,6 +13,7 @@
     //'BlurAdmin.pages.components',
 
    'BlurAdmin.pages.battery',
+   'BlurAdmin.pages.car',
    'BlurAdmin.pages.enterprise',
    // 'BlurAdmin.pages.charts',
     //'BlurAdmin.pages.maps',

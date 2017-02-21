@@ -1,0 +1,81 @@
+<div class="widgets">
+    <div class="row">
+        <div class="col-md-12">
+            <div ba-panel ba-panel-class="with-scroll">
+                <div>
+                    <!-- form-horizontal -->
+                    <div class="radio">
+                        <label>
+                            <input ng-model="option" type="radio" name="optionsRadios"
+                                   value="0" checked><span style="font-size: 16px;"> 手动输入</span>
+                        </label>
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="firstname" class="col-sm-3 control-label"><span style="font-size: 16px;">电池包流水号:</span></label>
+                                <div class="col-sm-7">
+                                    <input ng-disabled="option==1" ng-model="package.packageId" type="text" class="form-control" id="firstname"
+                                           placeholder="请输入电池包流水号">
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="submit" class="btn btn-primary">扫描输入</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="col-sm-3 control-label"><span style="font-size: 16px;">该包对应模组流水号:</span></label>
+                                <div class="col-sm-7">
+                                    <input ng-disabled="option==1" ng-model="package.module[0]" type="text" class="form-control" id="name"
+                                           placeholder="请输入模组流水号">
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="submit" class="btn btn-primary">扫描输入</button>
+                                </div>
+                                <div class="row col-sm-offset-3 col-sm-7" style="margin-top: 15px;">
+                                    <input ng-disabled="option==1" ng-model="package.module[1]" type="text" class="form-control"
+                                           placeholder="请输入模组流水号">
+                                </div>
+                                <div class="row col-sm-offset-3 col-sm-7" style="margin-top: 15px;">
+                                    <input ng-disabled="option==1" ng-model="package.module[2]" type="text" class="form-control"
+                                           placeholder="请输入模组流水号">
+                                </div>
+                                <div class="row col-sm-offset-3 col-sm-7" style="margin-top: 15px;">
+                                    <input ng-disabled="option==1" ng-model="package.module[3]" type="text" class="form-control"
+                                           placeholder="请输入模组流水号">
+                                </div>
+                                <div class="row col-sm-offset-3 col-sm-7" style="margin-top: 15px;">
+                                    <input ng-disabled="option==1" ng-model="package.module[4]" type="text" class="form-control"
+                                           placeholder="请输入模组流水号">
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input  ng-model="option" type="radio" name="optionsRadios"
+                                   value="1" >
+                            <span style="font-size: 16px;">导入本地文件</span>
+                        </label>
+                        <div class="col-sm-offset-3">
+                            <form class="form-inline" role="form">
+                                <span style="font-size: 16px;">导入本地文件</span>
+                                <div class="form-group">
+                                    <label class="sr-only" for="inputfile">文件输入</label>
+                                    <input  ng-disabled="option==0" type="file" id="inputfile" onchange="angular.element(this).scope().uploadFile(this)">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-10" style="margin-top: 20px; ">
+                                <button ng-click="confirm()" type="submit" class="btn btn-primary" style="padding: 6px 30px;">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -5,18 +5,18 @@
 (function () {
   'use strict';
 
-  angular.module('BlurAdmin.pages.battery', [])
+  angular.module('BlurAdmin.pages.car', [])
     .config(routeConfig);
 
   /** @ngInject */
   function routeConfig($stateProvider, $urlRouterProvider) {
     $stateProvider
-        .state('battery', {
-          url: '/battery',
+        .state('car', {
+          url: '/car',
           template : '<ui-view></ui-view>',
           abstract: true,
-          title: '电池生产商',
-          controller: 'batteryCtrl',
+          title: '汽车生产商',
+          controller: 'carCtrl',
           sidebarMeta: {
             /*
             ** 一级菜单可以设置icon，二级菜单不可以
@@ -26,43 +26,33 @@
             icon: 'ion-soup-can-outline',
             order: 150,
           },
-        }).state('battery.import', {
+        }).state('car.import', {
           url: '/import',
-          templateUrl: 'app/pages/battery/import/import.html',
+          templateUrl: 'app/pages/car/import/import.html',
           controller: 'ImportCtrl',
           title: '证书导入',
           sidebarMeta: {
             order: 151,
           }
-        }).state('battery.submit', {
+        }).state('car.submit', {
           url: '/submit',
-          templateUrl: 'app/pages/battery/submit/submit.html',
+          templateUrl: 'app/pages/car/submit/submit.html',
           controller: 'SubmitCtrl',
           title: '信息上报',
           sidebarMeta: {
             order: 159,
           }
-        })
-        .state('battery.generate', {
-          url: '/generate',
-          templateUrl: 'app/pages/battery/generate/generate.html',
-          controller: 'generateCtrl',
-          title: '生成二维码',
-          sidebarMeta: {
-            order: 160,
-          }
-        })
-        .state('battery.trace', {
-          url: '/batteryTrace',
-          templateUrl: 'app/pages/battery/batteryTrace/batteryTrace.html',
-          controller: 'batteryTraceCtrl',
+        }).state('car.trace', {
+          url: '/carTrace',
+          templateUrl: 'app/pages/car/carTrace/carTrace.html',
+          controller: 'carTraceCtrl',
           title: '追溯查询',
           sidebarMeta: {
             order: 154,
           },
         })
         ;
-    $urlRouterProvider.when('/battery','/battery/import');
+    $urlRouterProvider.when('/car','/car/import');
   }
 
 })();
