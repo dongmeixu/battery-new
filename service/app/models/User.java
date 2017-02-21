@@ -14,12 +14,12 @@ import java.util.Date;
  */
 public class User extends BaseModel implements Jsonable {
     @Required
-    public String userName;
+    private String userName;
     @JSONField(serialize = false)
     @Required
-    public String password;
+    private String password;
 
-    public Integer state;
+    private Integer state;
 
     public String getUserName() {
         return userName;
@@ -36,8 +36,6 @@ public class User extends BaseModel implements Jsonable {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
 
     public Integer getState() {
         return state;

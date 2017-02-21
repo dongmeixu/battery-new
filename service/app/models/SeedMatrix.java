@@ -9,13 +9,24 @@ import java.util.Date;
  * Created by xudongmei on 2017/1/14.
  */
 public class SeedMatrix extends BaseModel {
+
     @Required
-    public String matrix; //种子矩阵
+    private String certId; //对应的证书Id
     @Required
-    public Date enableTime; //启用时间
+    private String matrix; //种子矩阵
     @Required
-    public Date expireTime; //到期时间
-    public static String version = "1.0.0";
+    private Date enableTime; //启用时间
+    @Required
+    private Date expireTime; //到期时间
+    private static String version = "1.0.0";
+
+    public String getCertId() {
+        return certId;
+    }
+
+    public void setCertId(String certId) {
+        this.certId = certId;
+    }
 
     public String getMatrix() {
         return matrix;
@@ -39,5 +50,13 @@ public class SeedMatrix extends BaseModel {
 
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
+    }
+
+    public static String getVersion() {
+        return version;
+    }
+
+    public static void setVersion(String version) {
+        SeedMatrix.version = version;
     }
 }
