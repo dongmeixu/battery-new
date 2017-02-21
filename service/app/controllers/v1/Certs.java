@@ -4,18 +4,13 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import controllers.api.API;
 import edu.ustb.security.domain.vo.ecc.Pair;
+import edu.ustb.security.service.ecc.CpkMatrixsFactory;
 import edu.ustb.security.service.ecc.impl.CpkCoresImpl;
-
 import models.Company;
 import models.Module;
 import models.SeedMatrix;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
-import java.math.BigInteger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 import play.Logger;
@@ -27,12 +22,15 @@ import play.libs.Images;
 import utils.SafeGuard;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -56,8 +54,14 @@ public class Certs extends API {
      */
     public static void apply() {
         Company company = readBody(Company.class);
-        company.save();
-        created(company);
+        Company companySave = getCollection(Company.class).findOne("{companyName:#}",company.getCompanyName()).as(Company.class);
+        if(companySave == null) {
+            company.save();
+            created(company);
+            renderJSON("{\"success\":\"ok\"}");
+        }else{
+            render("{\"msg\":\"此公司名已被注冊！\"}");
+        }
     }
 
     /**
@@ -103,17 +107,15 @@ public class Certs extends API {
                 /**
                  * 调用接口生成 tradeSk,productSK,Matrix
                  */
-                //todo:调用 security 的接口 java.lang.NullPointerException，怎么解决？
-               /* String tradeSk = cpkCores.generateSkById(cert.getCreditCode()).toString();
-                String productSK = cpkCores.generateSkById(cert.getVendorCode()).toString();
-                String matrix = CpkMatrixsFactory.generateCpkMatrix().toJson();*/
-                String tradeSK = "demo-1";
-                String productSK = "demo-2";
-                String matrix = "demo-3";
+                Company company = getCollection(Company.class).findOne("{companyId:#}",id).as(Company.class);
+//                Logger.info(cpkCores.generateSkById(""));
+                String tradeSK = cpkCores.generateSkById(company.getTradeSK()).toString();
+                String productSK = cpkCores.generateSkById(company.getProductSK()).toString();
+                String matrix = CpkMatrixsFactory.generateCpkMatrix().toJson();
                 /**
                  * 更新记录
                  */
-                getCollection(Company.class).update(new ObjectId(id)).multi().with("{$set:{status:#,modifyTime:#,tradeSK:#,productSK:#}}",status,modifyTime,tradeSK,productSK).isUpdateOfExisting();
+                getCollection(Company.class).update("{companyId:#}",id).multi().with("{$set:{status:#,modifyTime:#,tradeSK:#,productSK:#}}",status,modifyTime,tradeSK,productSK).isUpdateOfExisting();
 
                 /**
                  * 保存相应的种子矩阵信息
@@ -121,10 +123,10 @@ public class Certs extends API {
                 SeedMatrix seedMatrix = new SeedMatrix();
                 seedMatrix.setCertId(id);
                 seedMatrix.setMatrix(matrix);
-                seedMatrix.save();
+                seedMatrix.save();//seedMatrix應該不會重複？
 
             }else {//只更新状态
-                getCollection(Company.class).update(new ObjectId(id)).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
+                getCollection(Company.class).update("{companyId:#}",id).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
             }
         }
     }
@@ -206,7 +208,7 @@ public class Certs extends API {
      * @param ids 证书 ids
      */
     public static void download(@Required String ids) throws IOException {
-        Company company = getCollection(Company.class).findOne(new ObjectId(ids)).as(Company.class);//获取相应的证书信息
+        Company company = getCollection(Company.class).findOne("{companyId:#}",String.valueOf(ids)).as(Company.class);//获取相应的证书信息
         SeedMatrix seedMatrix = getCollection(SeedMatrix.class).findOne("{certId:#}",ids).as(SeedMatrix.class);//读取相应的种子矩阵
         notFoundIfNull(company);
         String[] strs = {company.getTradeSK(),company.getProductSK(),seedMatrix.getMatrix()};
@@ -228,8 +230,7 @@ public class Certs extends API {
             zos.closeEntry();
         }
         zos.close();
-        //todo:问题：调用 renderBinary后 http response code = 0
-        //renderBinary(new File(zipName));
+        renderBinary(new File(zipFile.getName()));
     }
 
     /**

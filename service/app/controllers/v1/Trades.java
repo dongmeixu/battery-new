@@ -2,12 +2,17 @@ package controllers.v1;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.mongodb.DBObject;
 import controllers.api.API;
 import models.*;
 import models.Package;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 import org.jongo.RawResultHandler;
@@ -23,18 +28,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 import static play.modules.jongo.BaseModel.getCollection;
 import static play.modules.jongo.BaseModel.getJongo;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 /**
  * Created by xudongmei on 2016/12/13.
  */
@@ -46,6 +45,7 @@ public class Trades extends API {
      * 1.新增交易信息
      */
     public static void save() {
+        //todo:多次同向交易未處理
         Trade trade = readBody(Trade.class);
         trade.save();
         created(trade);
@@ -159,18 +159,52 @@ public class Trades extends API {
         DBObject firstBatch = (DBObject)((DBObject)getJongo().runCommand(command, companyName, startDate, endDate).map(new RawResultHandler<DBObject>()).get("cursor")).get("firstBatch");
         List l=(List) firstBatch;
         JSONArray jsonArray = JSON.parseArray(l.toString());
+        Map<String,Integer> map = new HashMap<>();
+
         for(int i = 0;i<l.size();i++)
         {
             jsonArray.getJSONObject(i).put("_id",getCollection("company").findOne("{companyName: #}",jsonArray.getJSONObject(i).get("_id")).as(Company.class).getProvince());
-            getCollection(Company.class).insert(jsonArray.getJSONObject(i).values());
+//            getCollection(Company.class).insert(jsonArray.getJSONObject(i).values());
         }
+        Logger.info(jsonArray.toString());
+//        Integer point = null;
+        for(int i = 0;i<jsonArray.size();i++) {
+            Object key = jsonArray.getJSONObject(i).get("_id");
+            Object value = Integer.parseInt(jsonArray.getJSONObject(i).get("count").toString());
+            if (map.containsKey(key)) {
+                map.put(key.toString(), map.get(key).intValue() + Integer.parseInt(value.toString()));
+            } else {
+                map.put(key.toString(), Integer.parseInt(value.toString()));
+            }
+        }
+//        Iterator<Map.Entry<String, Integer>> entries = map.entrySet().iterator();
+//        JSONArray result = new JSONArray();
+//        while (entries.hasNext()) {
+//
+//            Map.Entry<String, Integer> entry = entries.next();
+////            result.add(map.)
+//        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        String result  = null;
+        try {
+            result  = objectMapper.writeValueAsString(map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        JSONArray jsonArray1 = new JSONArray();
+//        for(int i = 0;i<map.size();i++)
+//        {
+//            jsonArray1.add(i,map.entrySet());
+//        }
+//        Logger.info(jsonArray1.toString());
+
 //        getCollection(Company.class).aggregate("{ $project : {_id:0, 0 : 1 , 1 : 1 } }").and("{$group:{_id:\"$1\",count:{$sum:\"$0\"}}}");
-        String countProvinceCommond = "{aggregate: \"company\",pipeline: [{ $project: {_id:0, 0 : 1 , 1 : 1 } },{$group:{_id:\"$1\",count:{$sum:\"$0\"}}}],cursor: { }}";
-        DBObject retval = (DBObject)((DBObject)getJongo().runCommand(countProvinceCommond).map(new RawResultHandler<DBObject>()).get("cursor")).get("firstBatch");
-        JSONArray countProvince = JSON.parseArray(retval.toString());
-        getCollection(Company.class).remove("{0: {$lt:#}}",Integer.MAX_VALUE);//模组数超过Integer.MAX_VALUE会错统
-        countProvince.remove(countProvince.size()-1);
-        renderJSON("{"+"\"geos\": {\"name\": "+"\""+companyName+"\""+",\"longitude\":" +longitude+",\"latitude\": "+latitude+"}" + ","+"\"data\":" + countProvince.toString() +"}");
+//        String countProvinceCommond = "{aggregate: \"company\",pipeline: [{ $project: {_id:0, 0 : 1 , 1 : 1 } },{$group:{_id:\"$1\",count:{$sum:\"$0\"}}}],cursor: { }}";
+//        DBObject retval = (DBObject)((DBObject)getJongo().runCommand(countProvinceCommond).map(new RawResultHandler<DBObject>()).get("cursor")).get("firstBatch");
+//        JSONArray countProvince = JSON.parseArray(retval.toString());
+//        getCollection(Company.class).remove("{0: {$lt:#}}",Integer.MAX_VALUE);//模组数超过Integer.MAX_VALUE会错统
+//        countProvince.remove(countProvince.size()-1);
+        renderJSON("{"+"\"geos\": {\"name\": "+"\""+companyName+"\""+",\"longitude\":" +longitude+",\"latitude\": "+latitude+"}" + ","+"\"data\":" + result +"}");
     }
 
     /**
@@ -349,8 +383,13 @@ public class Trades extends API {
      */
     public static void carAndPackage() {
         Car cars = readBody(Car.class);
-        cars.save();
-        renderJSON("{\"success\":\"ok\"}");
+        Car car = getCollection(Car.class).findOne("{carId:#}",cars.getCarId()).as(Car.class);
+        if(car== null){
+            cars.save();
+            renderJSON("{\"success\":\"ok\"}");
+        }else{
+            render("{\"msg\":\"该条记录已存在！\"}");
+        }
     }
 
     /**
