@@ -28,6 +28,7 @@ public class Company extends BaseModel implements Jsonable,BlockchainAware {
     /**
      * 企业所在省份
      */
+    @Required
     private String province;
     /**
      * 企业所在城市
@@ -37,7 +38,9 @@ public class Company extends BaseModel implements Jsonable,BlockchainAware {
      * 企业所在地址
      */
     private String dom;
+    @Required
     private double longitude;
+    @Required
     private double latitude;
     /**
      * 社会信用码,也作为登录系统的账户名

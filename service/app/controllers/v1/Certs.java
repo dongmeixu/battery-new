@@ -4,9 +4,10 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import controllers.api.API;
 import edu.ustb.security.domain.vo.ecc.Pair;
-import edu.ustb.security.service.ecc.CpkMatrixsFactory;
+import edu.ustb.security.domain.vo.matrix.CpkMatrix;
 import edu.ustb.security.service.ecc.impl.CpkCoresImpl;
 import models.Company;
+import models.CpkSeedMatrix;
 import models.Module;
 import models.SeedMatrix;
 import org.apache.commons.io.IOUtils;
@@ -41,13 +42,20 @@ import static play.modules.jongo.BaseModel.getCollection;
  * Created by xudongmei on 2016/12/13.
  */
 public class Certs extends API {
-
-    private static CpkCoresImpl cpkCores;
     private static final String CERTS_PATH = Play.configuration.getProperty("attachments.path") + File.separator + "certs";
     public static String certFilesPath = CERTS_PATH + File.separator + "cpks"; //生成CPK证书保存地址
     public static String uploadsPath = CERTS_PATH + File.separator + "uploads"; //企业上传文件保存地址
     public static String qrs = CERTS_PATH + File.separator + "qrs"; //二维码保存地址
     public static String pattern = Play.configuration.getProperty("date.format");
+    private static CpkCoresImpl skCores = null;
+    private static CpkMatrix skMatrix = null;
+    static {
+        CpkSeedMatrix cpkSeedMatrixdb = getCollection(CpkSeedMatrix.class).findOne("{CpkId:#}","12345").as(CpkSeedMatrix.class);
+        //  反序列化得到仅包含种子私钥的种子私钥
+        CpkMatrix skMatrixre = CpkMatrix.fromJson(cpkSeedMatrixdb.getSkMatrixJson());
+        // 通过种子私钥得到CpkCores 算法核心类
+        skCores = new CpkCoresImpl(skMatrixre);
+    }
 
     /**
      * 1.政府内部用户-离线信息录入（申请证书）
@@ -108,23 +116,12 @@ public class Certs extends API {
                  * 调用接口生成 tradeSk,productSK,Matrix
                  */
                 Company company = getCollection(Company.class).findOne("{companyId:#}",id).as(Company.class);
-//                Logger.info(cpkCores.generateSkById(""));
-                String tradeSK = cpkCores.generateSkById(company.getTradeSK()).toString();
-                String productSK = cpkCores.generateSkById(company.getProductSK()).toString();
-                String matrix = CpkMatrixsFactory.generateCpkMatrix().toJson();
+                String productSK = skCores.generateSkById("111").toString();
+                String tradeSK = skCores.generateSkById("222").toString();
                 /**
                  * 更新记录
                  */
                 getCollection(Company.class).update("{companyId:#}",id).multi().with("{$set:{status:#,modifyTime:#,tradeSK:#,productSK:#}}",status,modifyTime,tradeSK,productSK).isUpdateOfExisting();
-
-                /**
-                 * 保存相应的种子矩阵信息
-                 */
-                SeedMatrix seedMatrix = new SeedMatrix();
-                seedMatrix.setCertId(id);
-                seedMatrix.setMatrix(matrix);
-                seedMatrix.save();//seedMatrix應該不會重複？
-
             }else {//只更新状态
                 getCollection(Company.class).update("{companyId:#}",id).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
             }
@@ -230,7 +227,7 @@ public class Certs extends API {
             zos.closeEntry();
         }
         zos.close();
-        renderBinary(new File(zipFile.getName()));
+        renderBinary(zipFile);
     }
 
     /**

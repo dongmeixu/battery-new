@@ -45,7 +45,6 @@ public class Trades extends API {
      * 1.新增交易信息
      */
     public static void save() {
-        //todo:多次同向交易未處理
         Trade trade = readBody(Trade.class);
         trade.save();
         created(trade);
@@ -177,13 +176,6 @@ public class Trades extends API {
                 map.put(key.toString(), Integer.parseInt(value.toString()));
             }
         }
-//        Iterator<Map.Entry<String, Integer>> entries = map.entrySet().iterator();
-//        JSONArray result = new JSONArray();
-//        while (entries.hasNext()) {
-//
-//            Map.Entry<String, Integer> entry = entries.next();
-////            result.add(map.)
-//        }
         ObjectMapper objectMapper = new ObjectMapper();
         String result  = null;
         try {

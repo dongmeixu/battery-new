@@ -1,7 +1,6 @@
 package controllers;
 
 import controllers.api.API;
-import models.User;
 import play.Play;
 
 
